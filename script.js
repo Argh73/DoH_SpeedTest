@@ -1,4 +1,5 @@
 const checkButton = document.getElementById('checkButton');
+const reTestButton = document.getElementById('reTestButton');
 const editButton = document.getElementById('editButton');
 const topWebsites = ['google.com', 'youtube.com', 'facebook.com', 'instagram.com', 'chatgpt.com', 'x.com', 'whatsapp.com', 'reddit.com', 'wikipedia.org', 'amazon.com', 'tiktok.com', 'pinterest.com'];
 
@@ -96,6 +97,8 @@ const dnsServers = [
 
 let dnsChart;
 let chartData = [];
+let testedServers = 0;
+let totalServers = 0;
 
 // Helper function to normalize DoH URLs
 function normalizeDoHUrl(base) {
@@ -111,14 +114,79 @@ function normalizeDoHUrl(base) {
   }
 }
 
+// Load last test from localStorage
+function loadLastTest() {
+  try {
+    const lastTest = localStorage.getItem('lastTest');
+    if (lastTest) {
+      const data = JSON.parse(lastTest);
+      const date = new Date(data.date);
+      const timeAgo = getTimeAgo(date);
+      document.getElementById('lastTestInfo').innerHTML = `
+        📅 Last test: ${timeAgo} (${date.toLocaleString()})
+        ${data.results?.length ? `<br>📊 Found ${data.results.length} DNS servers` : ''}
+      `;
+    }
+  } catch (e) {
+    console.warn('Could not load last test:', e);
+  }
+}
+
+function getTimeAgo(date) {
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  
+  if (diffMins < 1) return 'Just now';
+  if (diffMins < 60) return `${diffMins} minutes ago`;
+  if (diffHours < 24) return `${diffHours} hours ago`;
+  return `${diffDays} days ago`;
+}
+
+// Save test results to localStorage
+function saveTestResults() {
+  try {
+    const results = dnsServers.map(server => ({
+      name: server.name,
+      url: server.url,
+      ips: server.ips || [],
+      speed: server.speed || {},
+      successRate: server.successRate || 0,
+      totalTests: server.totalTests || 0,
+      successfulTests: server.successfulTests || 0
+    }));
+    
+    localStorage.setItem('lastTest', JSON.stringify({
+      date: new Date(),
+      results: results,
+      topWebsites: [...topWebsites],
+      testVersion: '2.0'
+    }));
+  } catch (e) {
+    console.warn('Could not save test results:', e);
+  }
+}
+
+// Filter servers without DoH
+function getDoHServers() {
+  return dnsServers.filter(server => server.url !== null);
+}
+
+function getNonDoHServers() {
+  return dnsServers.filter(server => server.url === null);
+}
+
 function showBestDNS() {
-    const validServers = dnsServers.filter(s => s.speed && typeof s.speed.avg === 'number');
+    const dohServers = getDoHServers();
+    const validServers = dohServers.filter(s => s.speed && typeof s.speed.avg === 'number');
     
     if (validServers.length === 0) {
         // Show the server with the fewest failures
-        const bestBySuccess = [...dnsServers].sort((a, b) => {
-            const aSuccess = a.individualResults.filter(r => typeof r.speed === 'number').length;
-            const bSuccess = b.individualResults.filter(r => typeof r.speed === 'number').length;
+        const bestBySuccess = [...dohServers].sort((a, b) => {
+            const aSuccess = a.successfulTests || 0;
+            const bSuccess = b.successfulTests || 0;
             return bSuccess - aSuccess;
         })[0];
 
@@ -145,9 +213,15 @@ function showBestDNS() {
             <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-3">Best DNS for you:</h3>
             <p class="font-mono text-lg mb-3"><strong>${best.name}</strong></p>
             <p class="font-mono text-gray-700 dark:text-gray-300 mb-4 break-all">${ips}</p>
-            <button onclick="copyBestDNS('${ips.replace(/'/g, "\\'")}', this)" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                Copy IPs
-            </button>
+            <div class="flex flex-wrap gap-4">
+                <button onclick="copyBestDNS('${ips.replace(/'/g, "\\'")}', this)" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
+                    Copy IPs
+                </button>
+                <div class="text-sm text-gray-600 dark:text-gray-400">
+                    <div>Success Rate: ${best.successRate?.toFixed(1) || 0}%</div>
+                    <div>Avg Response: ${best.speed.avg.toFixed(2)}ms</div>
+                </div>
+            </div>
             <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Use these IPs in your network, router, or game settings.</p>
         </div>
     `;
@@ -180,7 +254,8 @@ function updateChartWithData(server) {
         name: server.name,
         avg: server.speed && typeof server.speed.avg === 'number' ? server.speed.avg : null,
         min: server.speed && typeof server.speed.min === 'number' ? server.speed.min : null,
-        max: server.speed && typeof server.speed.max === 'number' ? server.speed.max : null
+        max: server.speed && typeof server.speed.max === 'number' ? server.speed.max : null,
+        successRate: server.successRate || 0
     };
 
     if (existingIndex === -1) {
@@ -218,6 +293,12 @@ function updateChart() {
     const minValue = Math.min(...validData.map(item => item.avg));
     const maxValue = Math.max(...validData.map(item => item.avg));
     const scaleMin = Math.max(0, minValue * 0.7);
+    const overallAvg = validData.reduce((sum, item) => sum + item.avg, 0) / validData.length;
+
+    // Register annotation plugin
+    if (Chart.registry.getPlugin('annotation')) {
+        Chart.register(ChartAnnotation);
+    }
 
     dnsChart = new Chart(ctx, {
         type: 'bar',
@@ -249,9 +330,27 @@ function updateChart() {
                             const server = validData[context.dataIndex];
                             return [
                                 `Average: ${server.avg.toFixed(2)}ms`,
+                                `Success Rate: ${server.successRate.toFixed(1)}%`,
                                 `Min: ${server.min?.toFixed(2) || 'N/A'}ms`,
                                 `Max: ${server.max?.toFixed(2) || 'N/A'}ms`
                             ];
+                        }
+                    }
+                },
+                annotation: {
+                    annotations: {
+                        line1: {
+                            type: 'line',
+                            xMin: overallAvg,
+                            xMax: overallAvg,
+                            borderColor: '#ff6b6b',
+                            borderWidth: 2,
+                            borderDash: [5, 5],
+                            label: {
+                                content: `Overall Avg: ${overallAvg.toFixed(2)}ms`,
+                                enabled: true,
+                                position: 'start'
+                            }
                         }
                     }
                 }
@@ -328,14 +427,28 @@ function getPerformanceColor(responseTime, allData, border = false) {
 }
 
 checkButton.addEventListener('click', async function () {
+    await runTests();
+});
+
+reTestButton.addEventListener('click', async function () {
+    await runTests();
+});
+
+async function runTests() {
     this.disabled = true;
     editButton.disabled = true;
     document.getElementById('editDoHButton').disabled = true;
+    reTestButton.disabled = true;
     document.getElementById('loadingMessage').classList.remove('hidden');
     document.getElementById('loadingText').textContent = 'Starting DNS tests...';
     
     chartData = [];
+    testedServers = 0;
+    totalServers = getDoHServers().length;
+    
     document.getElementById('chartContainer').classList.add('hidden');
+    document.getElementById('bestDNSContainer').innerHTML = '';
+    document.getElementById('resultsTable').querySelector('tbody').innerHTML = '';
 
     await performDNSTests();
 
@@ -343,24 +456,32 @@ checkButton.addEventListener('click', async function () {
     this.disabled = false;
     editButton.disabled = false;
     document.getElementById('editDoHButton').disabled = false;
-});
+    reTestButton.disabled = false;
+    reTestButton.classList.remove('hidden');
+    
+    // Save results to localStorage
+    saveTestResults();
+}
 
 async function performDNSTests() {
-    // Process DNS servers in parallel but limit concurrent connections to avoid overwhelming the browser
+    const ipv6Enabled = document.getElementById('ipv6Toggle').checked;
+    const dohServers = getDoHServers();
+    
     const CONCURRENT_LIMIT = 5;
     
-    for (let i = 0; i < dnsServers.length; i += CONCURRENT_LIMIT) {
-        const batch = dnsServers.slice(i, i + CONCURRENT_LIMIT);
+    for (let i = 0; i < dohServers.length; i += CONCURRENT_LIMIT) {
+        const batch = dohServers.slice(i, i + CONCURRENT_LIMIT);
         await Promise.all(batch.map(async server => {
             const dohUrl = normalizeDoHUrl(server.url);
             if (!dohUrl) {
                 server.speed = {min: 'Unavailable', median: 'Unavailable', max: 'Unavailable', avg: 'Unavailable'};
                 server.individualResults = topWebsites.map(website => ({website, speed: 'Unavailable'}));
+                server.successRate = 0;
                 return;
             }
             
             const speedResults = await Promise.allSettled(
-                topWebsites.map(website => measureDNSSpeed(dohUrl, website, server.type, server.allowCors))
+                topWebsites.map(website => measureDNSSpeed(dohUrl, website, server.type, server.allowCors, ipv6Enabled))
             );
             
             server.individualResults = topWebsites.map((website, index) => {
@@ -375,6 +496,10 @@ async function performDNSTests() {
                 .filter(r => r.status === 'fulfilled' && typeof r.value === 'number')
                 .map(r => r.value)
                 .sort((a, b) => a - b);
+            
+            server.totalTests = topWebsites.length;
+            server.successfulTests = validResults.length;
+            server.successRate = (validResults.length / topWebsites.length) * 100;
             
             if (validResults.length > 0) {
                 const min = validResults[0];
@@ -393,17 +518,26 @@ async function performDNSTests() {
                 server.speed = {min: 'Unavailable', median: 'Unavailable', max: 'Unavailable', avg: 'Unavailable'};
             }
             
+            testedServers++;
+            updateProgress();
             updateResult(server);
         }));
-        
-        // Update loading message for each batch
-        document.getElementById('loadingText').textContent = `Testing DNS servers... (${Math.min(i + CONCURRENT_LIMIT, dnsServers.length)}/${dnsServers.length})`;
     }
+    
+    // Display non-DoH servers
+    displayNonDoHServers();
     
     showBestDNS();
 }
 
-async function measureDNSSpeed(dohUrl, hostname, serverType = 'post', allowCors = false) {
+function updateProgress() {
+    const percentage = totalServers > 0 ? (testedServers / totalServers) * 100 : 0;
+    document.getElementById('progressBar').style.width = `${percentage}%`;
+    document.getElementById('progressCounter').textContent = `${testedServers}/${totalServers} servers tested`;
+    document.getElementById('loadingText').textContent = `Testing DNS servers... ${percentage.toFixed(1)}% complete`;
+}
+
+async function measureDNSSpeed(dohUrl, hostname, serverType = 'post', allowCors = false, ipv6Enabled = false) {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 5000);
 
@@ -413,7 +547,7 @@ async function measureDNSSpeed(dohUrl, hostname, serverType = 'post', allowCors 
         if (serverType === 'get') {
             const urlWithParam = new URL(dohUrl);
             urlWithParam.searchParams.append('name', hostname);
-            urlWithParam.searchParams.append('type', 'A');
+            urlWithParam.searchParams.append('type', ipv6Enabled ? 'AAAA' : 'A');
             urlWithParam.searchParams.append('cd', 'true');
             urlWithParam.searchParams.append('nocache', Date.now());
 
@@ -436,7 +570,7 @@ async function measureDNSSpeed(dohUrl, hostname, serverType = 'post', allowCors 
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
         } else {
-            const dnsQuery = buildDNSQuery(hostname);
+            const dnsQuery = buildDNSQuery(hostname, ipv6Enabled ? 'AAAA' : 'A');
             let fetchOptions = {
                 method: 'POST', 
                 body: dnsQuery, 
@@ -469,14 +603,18 @@ async function measureDNSSpeed(dohUrl, hostname, serverType = 'post', allowCors 
     }
 }
 
-function buildDNSQuery(hostname) {
+function buildDNSQuery(hostname, recordType = 'A') {
     const header = new Uint8Array([0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
     const labels = hostname.split('.');
     const question = labels.flatMap(label => {
         const length = label.length;
         return [length, ...Array.from(label).map(c => c.charCodeAt(0))];
     });
-    const typeAndClass = new Uint8Array([0x00, 0x01, 0x00, 0x01]);
+    
+    // Set record type (A=1, AAAA=28)
+    const typeValue = recordType === 'AAAA' ? 28 : 1;
+    const typeAndClass = new Uint8Array([0x00, typeValue, 0x00, 0x01]);
+    
     const query = new Uint8Array(header.length + question.length + 2 + typeAndClass.length);
     query.set(header);
     query.set(question, header.length);
@@ -503,36 +641,64 @@ function updateResult(server) {
         detailsRow = row.nextElementSibling;
     }
 
+    const successRate = (server.successRate || 0).toFixed(1);
+    const successColor = server.successRate >= 90 ? 'text-green-400' : server.successRate >= 70 ? 'text-yellow-400' : 'text-red-400';
+
     row.innerHTML = `
-        <td class="text-left py-2 px-4 dark:text-gray-300">${server.name} 
-        <span class="copy-btn cursor-pointer ml-2 px-2 py-1 text-xs rounded flex items-center gap-1 transition-all duration-200 hover:-translate-y-0.5 select-none inline-flex" onclick="copyToClipboard('DoH Server URL: ${server.url}' + '\\n' + 'IP Addresses: ${server.ips.join(', ')}', this)" title="Copy server details">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-            </svg>
-            Copy
-        </span></td>
+        <td class="text-left py-2 px-4 dark:text-gray-300">${server.name}</td>
+        <td class="text-center py-2 px-4 dark:text-gray-300">
+            <span class="${successColor} font-semibold">${successRate}%</span>
+            <div class="text-xs text-gray-500">${server.successfulTests || 0}/${server.totalTests || 0}</div>
+        </td>
         <td class="text-center py-2 px-4 dark:text-gray-300">${server.speed.min !== 'Unavailable' ? server.speed.min.toFixed(2) : 'Unavailable'}</td>
         <td class="text-center py-2 px-4 dark:text-gray-300">${server.speed.median !== 'Unavailable' ? server.speed.median.toFixed(2) : 'Unavailable'}</td>
         <td class="text-center py-2 px-4 dark:text-gray-300"> ${server.speed.avg !== 'Unavailable' ? server.speed.avg.toFixed(2) : 'Unavailable'}</td>
         <td class="text-center py-2 px-4 dark:text-gray-300">${server.speed.max !== 'Unavailable' ? server.speed.max.toFixed(2) : 'Unavailable'}</td>
+        <td class="text-center py-2 px-4">
+            <span class="copy-btn cursor-pointer px-2 py-1 text-xs rounded flex items-center gap-1 transition-all duration-200 hover:-translate-y-0.5 select-none inline-flex mx-auto" onclick="copyToClipboard('DoH Server URL: ${server.url}' + '\\n' + 'IP Addresses: ${server.ips.join(', ')}', this)" title="Copy server details">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                </svg>
+                Copy
+            </span>
+        </td>
     `;
 
     detailsRow.innerHTML = `
-    <td colspan="4" class="py-2 px-4 dark:bg-gray-800 dark:text-gray-300">
+    <td colspan="6" class="py-2 px-4 dark:bg-gray-800 dark:text-gray-300">
         <div>Timings for each hostname:</div>
-        <ul>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-2">
             ${server.individualResults.map(result => {
         if (typeof result.speed === 'number') {
-            return `<li>${result.website}: ${result.speed.toFixed(2)} ms</li>`;
+            return `<div class="text-sm">${result.website}: ${result.speed.toFixed(2)} ms</div>`;
         } else {
-            return `<li>${result.website}: Unavailable</li>`;
+            return `<div class="text-sm text-red-400">${result.website}: Failed</div>`;
         }
     }).join('')}
-        </ul>
+        </div>
     </td>
 `;
 
     updateChartWithData(server);
+}
+
+function displayNonDoHServers() {
+    const noDoHServers = getNonDoHServers();
+    const noDoHSection = document.getElementById('noDoHSection');
+    const noDoHList = document.getElementById('noDoHList');
+    
+    if (noDoHServers.length > 0) {
+        noDoHSection.classList.remove('hidden');
+        noDoHList.innerHTML = noDoHServers.map(server => `
+            <div class="no-doh-server glass-card p-4 rounded-lg">
+                <h4 class="font-bold text-yellow-400">${server.name}</h4>
+                <p class="text-sm opacity-80">IPs: ${server.ips.join(', ')}</p>
+                ${server.note ? `<p class="text-xs text-gray-400 mt-2">${server.note}</p>` : ''}
+            </div>
+        `).join('');
+    } else {
+        noDoHSection.classList.add('hidden');
+    }
 }
 
 function sortTable(columnIndex) {
@@ -558,6 +724,15 @@ function sortTable(columnIndex) {
             return 0;
         }
 
+        // Special handling for success rate column
+        if (columnIndex === 1) {
+            const rateA = parseFloat(cellA.replace('%', '')) || 0;
+            const rateB = parseFloat(cellB.replace('%', '')) || 0;
+            if (rateA < rateB) return -1;
+            if (rateA > rateB) return 1;
+            return 0;
+        }
+
         const valA = cellA === 'Unavailable' ? Number.POSITIVE_INFINITY : parseFloat(cellA) || 0;
         const valB = cellB === 'Unavailable' ? Number.POSITIVE_INFINITY : parseFloat(cellB) || 0;
 
@@ -577,7 +752,7 @@ function copyToClipboard(text, buttonElement) {
     navigator.clipboard.writeText(text).then(() => {
         buttonElement.classList.add('copied');
         buttonElement.innerHTML = `
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
             </svg>
             Copied!
@@ -586,7 +761,7 @@ function copyToClipboard(text, buttonElement) {
         setTimeout(() => {
             buttonElement.classList.remove('copied');
             buttonElement.innerHTML = `
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
                 </svg>
                 Copy
@@ -595,14 +770,14 @@ function copyToClipboard(text, buttonElement) {
     }).catch(err => {
         console.error('Error in copying text: ', err);
         buttonElement.innerHTML = `
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
             </svg>
             Error
         `;
         setTimeout(() => {
             buttonElement.innerHTML = `
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
                 </svg>
                 Copy
@@ -610,6 +785,26 @@ function copyToClipboard(text, buttonElement) {
         }, 2000);
     });
 }
+
+// Download chart as PNG
+document.getElementById('downloadChartBtn').addEventListener('click', function() {
+    if (dnsChart) {
+        const link = document.createElement('a');
+        link.download = `dns-speed-comparison-${new Date().toISOString().split('T')[0]}.png`;
+        link.href = dnsChart.toBase64Image();
+        link.click();
+    }
+});
+
+// IPv6 Toggle
+document.getElementById('ipv6Toggle').addEventListener('change', function() {
+    const thumb = document.getElementById('ipv6ToggleThumb');
+    if (this.checked) {
+        thumb.style.transform = 'translateX(20px)';
+    } else {
+        thumb.style.transform = 'translateX(0)';
+    }
+});
 
 document.getElementById('cta').addEventListener('click', function () {
     if (navigator.share) {
@@ -637,6 +832,9 @@ window.addEventListener('resize', function () {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Load last test info
+    loadLastTest();
+    
     const modal = document.getElementById("websiteModal");
     const btn = document.getElementById("editButton");
     const span = document.getElementsByClassName("close")[0];
