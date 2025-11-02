@@ -37,8 +37,9 @@
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     
     <!-- Performance Optimization -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -50,20 +51,46 @@
                         'neon-blue': '#00d4ff',
                         'neon-cyan': '#00ffff',
                         'electric-purple': '#8b5cf6',
-                        'matrix-green': '#00ff41'
+                        'matrix-green': '#00ff41',
+                        'cyber-pink': '#ff10f0',
+                        'deep-purple': '#1a0b3d',
+                        'cosmic-blue': '#0f0c29',
+                        'electric-violet': '#7c3aed'
                     },
                     fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
                         'mono': ['Fira Code', 'Monaco', 'Consolas', 'monospace']
                     },
                     animation: {
                         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                         'bounce-slow': 'bounce 2s infinite',
                         'glow': 'glow 2s ease-in-out infinite alternate',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 3s ease-in-out infinite',
+                        'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
                     },
                     keyframes: {
                         glow: {
-                            'from': { 'box-shadow': '0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 15px #00d4ff' },
-                            'to': { 'box-shadow': '0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff' }
+                            'from': { 'box-shadow': '0 0 20px #00d4ff, 0 0 30px #00d4ff, 0 0 40px #00d4ff' },
+                            'to': { 'box-shadow': '0 0 30px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' }
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
+                        },
+                        'pulse-glow': {
+                            '0%': { 
+                                'box-shadow': '0 0 20px rgba(59, 130, 246, 0.5)',
+                                'border-color': 'rgba(59, 130, 246, 0.3)'
+                            },
+                            '100%': { 
+                                'box-shadow': '0 0 30px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.4)',
+                                'border-color': 'rgba(59, 130, 246, 0.6)'
+                            }
                         }
                     }
                 }
@@ -79,39 +106,55 @@
     <!-- Custom CSS -->
     <style>
         /* ============================================
-           GLOBAL STYLES & RESET
+           ADVANCED COSMIC BACKGROUND
         ============================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
-            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f0f1e 75%, #000000 100%);
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
+            
+            /* Multi-layer cosmic gradient */
+            background: 
+                radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(239, 68, 68, 0.1) 0%, transparent 50%),
+                linear-gradient(135deg, 
+                    #0f0c29 0%, 
+                    #24243e 12%, 
+                    #1a0b3d 25%, 
+                    #0f0c29 37%, 
+                    #302b63 50%, 
+                    #24243e 62%, 
+                    #1a0b3d 75%, 
+                    #0f0c29 87%, 
+                    #000000 100%);
+            background-size: 400% 400%, 300% 300%, 500% 500%, 350% 350%, 600% 600%;
+            animation: cosmicFlow 25s ease infinite;
             min-height: 100vh;
             color: #ffffff;
             overflow-x: hidden;
         }
 
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            25% { background-position: 100% 0%; }
-            50% { background-position: 100% 100%; }
-            75% { background-position: 0% 100%; }
-            100% { background-position: 0% 50%; }
+        @keyframes cosmicFlow {
+            0% { 
+                background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 50%;
+            }
+            25% { 
+                background-position: 100% 50%, 0% 50%, 100% 0%, 0% 100%, 50% 0%;
+            }
+            50% { 
+                background-position: 50% 100%, 50% 100%, 0% 50%, 100% 50%, 100% 100%;
+            }
+            75% { 
+                background-position: 0% 50%, 100% 50%, 50% 0%, 50% 100%, 0% 0%;
+            }
+            100% { 
+                background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 50%;
+            }
         }
 
         /* ============================================
-           ANIMATED PARTICLES BACKGROUND
+           ORBITAL PARTICLES SYSTEM
         ============================================ */
         #particles-canvas {
             position: fixed;
@@ -121,11 +164,11 @@
             height: 100%;
             z-index: 1;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         /* ============================================
-           WAVE ANIMATIONS
+           COSMIC WAVES
         ============================================ */
         .wave {
             position: absolute;
@@ -133,7 +176,7 @@
             left: 0;
             width: 100%;
             height: 200px;
-            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><path d="M0,100 Q300,50 600,100 T1200,100 L1200,200 L0,200 Z" fill="%231e40af" opacity="0.3"/><path d="M0,120 Q300,70 600,120 T1200,120 L1200,200 L0,200 Z" fill="%233b82f6" opacity="0.2"/></svg>') repeat-x;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="%23ff10f0" stop-opacity="0.3"/><stop offset="50%" stop-color="%2300d4ff" stop-opacity="0.4"/><stop offset="100%" stop-color="%237c3aed" stop-opacity="0.3"/></linearGradient></defs><path d="M0,100 Q300,50 600,100 T1200,100 L1200,200 L0,200 Z" fill="url(%23wave1)"/></svg>') repeat-x;
             background-size: 2400px 200px;
             animation: waveMove 25s linear infinite;
             pointer-events: none;
@@ -142,9 +185,10 @@
 
         .wave:nth-child(2) {
             height: 150px;
-            animation-delay: -5s;
-            animation-duration: 30s;
-            opacity: 0.5;
+            animation-delay: -8s;
+            animation-duration: 35s;
+            opacity: 0.7;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="%2300ffff" stop-opacity="0.2"/><stop offset="50%" stop-color="%23ff10f0" stop-opacity="0.3"/><stop offset="100%" stop-color="%2300ff41" stop-opacity="0.2"/></linearGradient></defs><path d="M0,120 Q300,70 600,120 T1200,120 L1200,200 L0,200 Z" fill="url(%23wave2)"/></svg>') repeat-x;
         }
 
         @keyframes waveMove {
@@ -153,35 +197,54 @@
         }
 
         /* ============================================
-           GLASS MORPHISM COMPONENTS
+           ADVANCED GLASS MORPHISM
         ============================================ */
         .glass-card {
             background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
             box-shadow: 
                 0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.05);
             position: relative;
             z-index: 10;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s;
+            z-index: -1;
+        }
+
+        .glass-card:hover::before {
+            left: 100%;
         }
 
         .glass-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px) scale(1.01);
             box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.4),
-                inset 0 1px 0 rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.18);
+                0 16px 48px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                0 0 50px rgba(59, 130, 246, 0.2);
+            border-color: rgba(255, 255, 255, 0.25);
         }
 
         .glass-header {
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(25px) saturate(200%);
+            -webkit-backdrop-filter: blur(25px) saturate(200%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             position: relative;
             overflow: hidden;
         }
@@ -193,8 +256,8 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: shimmer 3s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 4s infinite;
         }
 
         @keyframes shimmer {
@@ -203,13 +266,13 @@
         }
 
         /* ============================================
-           BUTTON STYLES
+           COSMIC BUTTONS
         ============================================ */
         .glass-button {
-            background: rgba(59, 130, 246, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(59, 130, 246, 0.4);
             color: #ffffff;
             font-weight: 600;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -224,8 +287,8 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
         }
 
         .glass-button:hover::before {
@@ -233,14 +296,16 @@
         }
 
         .glass-button:hover {
-            background: rgba(59, 130, 246, 0.25);
-            border-color: rgba(59, 130, 246, 0.5);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
+            border-color: rgba(59, 130, 246, 0.6);
+            transform: translateY(-3px);
+            box-shadow: 
+                0 12px 35px rgba(59, 130, 246, 0.4),
+                0 0 20px rgba(139, 92, 246, 0.3);
         }
 
         .glass-button:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
             transition: all 0.1s;
         }
 
@@ -263,35 +328,48 @@
         ============================================ */
         .spinner {
             display: inline-block;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
-            border-top-color: #3b82f6;
-            animation: spin 1s ease-in-out infinite;
+            border-top-color: #00d4ff;
+            border-right-color: #8b5cf6;
+            animation: spin 1.2s linear infinite, colorShift 3s ease-in-out infinite;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
 
+        @keyframes colorShift {
+            0% { border-top-color: #00d4ff; border-right-color: #8b5cf6; }
+            25% { border-top-color: #8b5cf6; border-right-color: #00ff41; }
+            50% { border-top-color: #00ff41; border-right-color: #ff10f0; }
+            75% { border-top-color: #ff10f0; border-right-color: #00d4ff; }
+            100% { border-top-color: #00d4ff; border-right-color: #8b5cf6; }
+        }
+
         .progress-bar {
             width: 100%;
-            height: 6px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
-            margin-top: 15px;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+            box-shadow: 
+                inset 0 2px 4px rgba(0, 0, 0, 0.3),
+                0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #1d4ed8, #1e40af);
-            border-radius: 3px;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, #00d4ff, #8b5cf6, #00ff41, #ff10f0);
+            background-size: 400% 100%;
+            border-radius: 4px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
+            animation: progressShimmer 2s ease-in-out infinite;
         }
 
         .progress-fill::after {
@@ -301,146 +379,226 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            animation: progress-shimmer 2s infinite;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: progressGlow 2s infinite;
         }
 
-        @keyframes progress-shimmer {
+        @keyframes progressShimmer {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 400% 50%; }
+        }
+
+        @keyframes progressGlow {
             0% { left: -100%; }
             100% { left: 100%; }
         }
 
         /* ============================================
-           TABLE STYLES
+           MODERN TABLE STYLES
         ============================================ */
         .results-table {
             border-collapse: separate;
             border-spacing: 0;
             width: 100%;
-            border-radius: 16px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .results-table th {
-            background: linear-gradient(135deg, #1e40af, #3730a3);
+            background: linear-gradient(135deg, #1e40af, #3730a3, #581c87);
             color: #ffffff;
             font-weight: 600;
-            padding: 16px 12px;
+            padding: 18px 16px;
             text-align: left;
             position: sticky;
             top: 0;
             z-index: 10;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             user-select: none;
-        }
-
-        .results-table th:hover {
-            background: linear-gradient(135deg, #2563eb, #4f46e5);
-            cursor: pointer;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
         }
 
         .results-table th:first-child {
             text-align: left;
-            padding-left: 20px;
+            padding-left: 24px;
         }
 
         .results-table th:not(:first-child) {
             text-align: center;
-            min-width: 120px;
+            min-width: 140px;
+        }
+
+        .results-table th:hover {
+            background: linear-gradient(135deg, #2563eb, #4f46e5, #7c3aed);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         .results-table th[aria-sort="ascending"]::after {
             content: " ▲";
-            font-size: 0.8em;
-            opacity: 0.8;
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-left: 8px;
+            color: #00d4ff;
         }
 
         .results-table th[aria-sort="descending"]::after {
             content: " ▼";
-            font-size: 0.8em;
-            opacity: 0.8;
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-left: 8px;
+            color: #00d4ff;
         }
 
         .results-table td {
-            padding: 14px 12px;
+            padding: 16px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.02);
         }
 
         .results-table td:first-child {
-            padding-left: 20px;
+            padding-left: 24px;
             font-weight: 500;
         }
 
         .results-table td:not(:first-child) {
             text-align: center;
             font-family: 'Fira Code', monospace;
-            font-weight: 500;
+            font-weight: 600;
+            font-size: 15px;
         }
 
         .results-table tbody tr {
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         .results-table tbody tr:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateY(-1px);
+            background: rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
         }
 
         .results-table tbody tr:nth-child(even) {
             background: rgba(255, 255, 255, 0.03);
         }
 
+        .results-table tbody tr:nth-child(even):hover {
+            background: rgba(59, 130, 246, 0.12);
+        }
+
+        /* ============================================
+           SPEED COMPARISON BADGES
+        ============================================ */
+        .speed-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .speed-excellent {
+            background: linear-gradient(135deg, #00ff41, #00cc33);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
+        }
+
+        .speed-good {
+            background: linear-gradient(135deg, #00d4ff, #0ea5e9);
+            color: #000;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .speed-average {
+            background: linear-gradient(135deg, #ff10f0, #d946ef);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(255, 16, 240, 0.4);
+        }
+
+        .speed-slow {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: #000;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+        }
+
         /* ============================================
            COPY BUTTON STYLES
         ============================================ */
         .copy-btn {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            color: #60a5fa;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.2s ease;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            color: #00d4ff;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
             cursor: pointer;
-            margin-left: 8px;
+            margin-left: 12px;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
+            backdrop-filter: blur(10px);
         }
 
         .copy-btn:hover {
-            background: rgba(59, 130, 246, 0.25);
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
             color: #ffffff;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
         }
 
         .copy-btn.copied {
-            background: rgba(34, 197, 94, 0.25);
-            border-color: rgba(34, 197, 94, 0.5);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.3));
+            border-color: rgba(34, 197, 94, 0.6);
             color: #86efac;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
         }
 
         /* ============================================
-           NOTIFICATION STYLES
+           NOTIFICATION SYSTEM
         ============================================ */
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 24px;
+            right: 24px;
             z-index: 1000;
             transform: translateX(400px);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 12px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 16px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             box-shadow: 
-                0 10px 30px rgba(0, 0, 0, 0.3),
-                0 4px 12px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+                0 12px 40px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            overflow: hidden;
+        }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: notificationShimmer 2s infinite;
+        }
+
+        @keyframes notificationShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .notification.show {
@@ -468,21 +626,21 @@
         }
 
         /* ============================================
-           MODAL STYLES
+           MODAL SYSTEM
         ============================================ */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
             z-index: 50;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal-overlay.show {
@@ -492,18 +650,20 @@
 
         .modal-content {
             background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 20px;
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
             padding: 2rem;
-            max-width: 500px;
+            max-width: 520px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.3s ease;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            transform: scale(0.9) translateY(30px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 
+                0 25px 70px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
         .modal-overlay.show .modal-content {
@@ -515,14 +675,15 @@
         ============================================ */
         .glass-input {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 12px 16px;
+            border-radius: 14px;
+            padding: 14px 18px;
             color: #ffffff;
             transition: all 0.3s ease;
             width: 100%;
+            font-size: 15px;
         }
 
         .glass-input::placeholder {
@@ -531,9 +692,11 @@
 
         .glass-input:focus {
             outline: none;
-            border-color: rgba(59, 130, 246, 0.5);
+            border-color: rgba(0, 212, 255, 0.6);
             background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            box-shadow: 
+                0 0 0 3px rgba(0, 212, 255, 0.1),
+                0 8px 25px rgba(0, 212, 255, 0.2);
         }
 
         /* ============================================
@@ -546,24 +709,24 @@
             }
 
             .glass-card {
-                border-radius: 16px;
+                border-radius: 20px;
                 padding: 1.5rem;
             }
 
             .results-table th,
             .results-table td {
-                padding: 10px 8px;
+                padding: 12px 10px;
                 font-size: 14px;
             }
 
             .results-table th:first-child,
             .results-table td:first-child {
-                padding-left: 12px;
+                padding-left: 16px;
             }
 
             .notification {
-                right: 10px;
-                left: 10px;
+                right: 12px;
+                left: 12px;
                 transform: translateY(-100px);
             }
 
@@ -577,34 +740,34 @@
             }
 
             .glass-button {
-                padding: 12px 16px;
+                padding: 14px 18px;
                 font-size: 14px;
             }
         }
 
         @media (max-width: 480px) {
             .results-table {
-                font-size: 12px;
+                font-size: 13px;
             }
 
             .results-table th,
             .results-table td {
-                padding: 8px 4px;
+                padding: 10px 6px;
             }
 
             .results-table th:first-child,
             .results-table td:first-child {
-                padding-left: 8px;
+                padding-left: 12px;
             }
 
             .spinner {
-                width: 40px;
-                height: 40px;
+                width: 50px;
+                height: 50px;
             }
         }
 
         /* ============================================
-           ACCESSIBILITY IMPROVEMENTS
+           ACCESSIBILITY
         ============================================ */
         .sr-only {
             position: absolute;
@@ -618,15 +781,13 @@
             border: 0;
         }
 
-        /* Focus states */
         .glass-button:focus,
         input:focus,
         button:focus {
-            outline: 2px solid #3b82f6;
+            outline: 2px solid #00d4ff;
             outline-offset: 2px;
         }
 
-        /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
             *,
             *::before,
@@ -639,12 +800,12 @@
         }
 
         /* ============================================
-           UTILITY CLASSES
+           UTILITY ANIMATIONS
         ============================================ */
         .hidden { display: none !important; }
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        .slide-up { animation: slideUp 0.5s ease-out; }
-        .bounce-in { animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .fade-in { animation: fadeIn 0.8s ease-in-out; }
+        .slide-up { animation: slideUp 0.8s ease-out; }
+        .bounce-in { animation: bounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
 
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -654,7 +815,7 @@
         @keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(40px);
             }
             to {
                 opacity: 1;
@@ -665,16 +826,13 @@
         @keyframes bounceIn {
             from {
                 opacity: 0;
-                transform: scale(0.3) translateY(30px);
+                transform: scale(0.8) translateY(30px);
             }
             50% {
-                opacity: 1;
-                transform: scale(1.05) translateY(0);
+                opacity: 0.8;
+                transform: scale(1.05) translateY(-5px);
             }
-            70% {
-                transform: scale(0.95) translateY(0);
-            }
-            to {
+            100% {
                 opacity: 1;
                 transform: scale(1) translateY(0);
             }
@@ -685,30 +843,32 @@
         ============================================ */
         .chart-container {
             position: relative;
-            height: 400px;
+            height: 420px;
             background: rgba(255, 255, 255, 0.02);
-            border-radius: 16px;
-            padding: 20px;
+            border-radius: 20px;
+            padding: 24px;
             border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
         }
 
         @media (max-width: 768px) {
             .chart-container {
-                height: 300px;
-                padding: 15px;
+                height: 320px;
+                padding: 16px;
             }
         }
 
         /* ============================================
-           BEST DNS CONTAINER
+           BEST DNS CARD
         ============================================ */
         .best-dns-card {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
             border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 2rem;
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(20px);
         }
 
         .best-dns-card::before {
@@ -717,53 +877,59 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #22c55e, #16a34a);
+            height: 6px;
+            background: linear-gradient(90deg, #00ff41, #16a34a, #00ff41);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
         }
 
         .best-dns-card h3 {
             color: #86efac;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
         }
 
         .best-dns-card .dns-name {
             font-family: 'Fira Code', monospace;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.2rem;
+            font-weight: 700;
             color: #ffffff;
-            margin-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
         }
 
         .best-dns-card .dns-ips {
             font-family: 'Fira Code', monospace;
             color: #d1d5db;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
             border: 1px solid rgba(255, 255, 255, 0.1);
             word-break: break-all;
+            font-size: 14px;
         }
 
         .copy-ips-btn {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
+            background: linear-gradient(135deg, #00ff41, #16a34a);
+            color: #000;
             border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .copy-ips-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
         }
 
         .copy-ips-btn:disabled {
@@ -771,40 +937,42 @@
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
+            color: #ffffff;
         }
     </style>
 </head>
 <body class="text-white min-h-screen">
-    <!-- Electric Particles Canvas -->
+    <!-- Orbital Particles -->
     <canvas id="particles-canvas"></canvas>
 
-    <!-- Animated Waves -->
+    <!-- Cosmic Waves -->
     <div class="wave"></div>
     <div class="wave"></div>
 
     <!-- Notification Container -->
-    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    <div id="notification-container" class="fixed top-6 right-6 z-50 space-y-3"></div>
 
-    <!-- Progressive Enhancement - No Script Notice -->
+    <!-- No Script Notice -->
     <noscript>
-        <div class="fixed top-4 left-4 right-4 z-50 glass-card p-6 text-center max-w-2xl mx-auto">
+        <div class="fixed top-6 left-6 right-6 z-50 glass-card p-6 text-center max-w-2xl mx-auto">
             <h2 class="text-yellow-400 text-xl font-bold mb-2">JavaScript Required</h2>
-            <p class="text-yellow-300">This tool requires JavaScript to function properly. Please enable JavaScript in your browser.</p>
+            <p class="text-yellow-300">This advanced tool requires JavaScript to function properly.</p>
         </div>
     </noscript>
 
     <div class="container mx-auto px-4 py-8 max-w-7xl relative z-10">
         <!-- Hero Section -->
-        <header class="glass-header text-center mb-10 p-8 rounded-2xl bounce-in">
+        <header class="glass-header text-center mb-10 p-8 md:p-12 rounded-3xl bounce-in">
             <div class="relative">
-                <h1 class="text-4xl md:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 animate-pulse-glow">
                     DoHSpeedTest
                 </h1>
-                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-300 opacity-20 blur-3xl -z-10"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-300 opacity-20 blur-3xl -z-10 animate-pulse"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500 rounded-full opacity-10 blur-3xl animate-float"></div>
             </div>
-            <p class="text-lg md:text-xl text-gray-200 mb-2">Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
+            <p class="text-xl md:text-2xl text-gray-200 mb-3 font-medium">Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
             <p class="text-sm text-gray-400 flex items-center justify-center gap-2">
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"/>
                 </svg>
                 Real-time DNS speed testing with 50+ global servers
@@ -812,21 +980,21 @@
         </header>
 
         <!-- Main Control Panel -->
-        <div class="glass-card p-6 md:p-8 mb-8 slide-up">
+        <div class="glass-card p-6 md:p-10 mb-10 slide-up">
             <!-- Control Buttons -->
-            <div class="flex flex-col lg:flex-row gap-4 mb-8">
+            <div class="flex flex-col xl:flex-row gap-4 lg:gap-6 mb-10">
                 <!-- Primary Test Button -->
                 <div class="flex-1">
                     <button id="checkButton" 
-                            class="w-full glass-button text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 text-lg"
+                            class="w-full glass-button text-white font-bold py-5 px-8 rounded-2xl flex items-center justify-center gap-3 text-xl"
                             aria-describedby="checkButtonHelp"
                             aria-expanded="false">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                         <span id="checkButtonText">Start DNS Test</span>
                         <span id="checkButtonSpinner" class="hidden">
-                            <svg class="w-7 h-7 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                             </svg>
                         </span>
@@ -834,37 +1002,37 @@
                     <div id="checkButtonHelp" class="sr-only">Begins DNS speed testing process. May take 30-60 seconds.</div>
                 </div>
                 
-                <!-- Secondary Action Buttons -->
-                <div class="flex gap-3 lg:gap-4">
+                <!-- Secondary Actions -->
+                <div class="flex gap-3 lg:gap-4 xl:flex-col lg:flex-row">
                     <button id="editButton" 
-                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 lg:w-auto w-full"
+                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 xl:w-full"
                             aria-describedby="editButtonHelp">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
-                        <span class="hidden lg:inline">Edit Hosts</span>
-                        <span class="lg:hidden">Hosts</span>
+                        <span class="hidden sm:inline">Edit Hosts</span>
+                        <span class="sm:hidden">Hosts</span>
                     </button>
                     <div id="editButtonHelp" class="sr-only">Manage the list of websites used for DNS testing</div>
                     
                     <button id="editDoHButton" 
-                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 lg:w-auto w-full"
+                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 xl:w-full"
                             aria-describedby="dohButtonHelp">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
-                        <span class="hidden lg:inline">Suggest DNS</span>
-                        <span class="lg:hidden">Suggest</span>
+                        <span class="hidden sm:inline">Suggest DNS</span>
+                        <span class="sm:hidden">Suggest</span>
                     </button>
                     <div id="dohButtonHelp" class="sr-only">Suggest a new DNS server to be added to the testing list</div>
                 </div>
             </div>
 
             <!-- Loading State -->
-            <div id="loadingMessage" class="hidden text-center py-12" role="status" aria-live="polite" aria-busy="true">
-                <div class="mb-6">
-                    <div class="spinner mx-auto mb-4" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Test progress"></div>
-                    <p class="text-lg font-medium" id="loadingText">Initializing test...</p>
+            <div id="loadingMessage" class="hidden text-center py-16" role="status" aria-live="polite" aria-busy="true">
+                <div class="mb-8">
+                    <div class="spinner mx-auto mb-6" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Test progress"></div>
+                    <p class="text-xl font-semibold" id="loadingText">Initializing cosmic DNS test...</p>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
@@ -872,13 +1040,13 @@
             </div>
 
             <!-- Results Table Section -->
-            <div id="dnsResults" class="mt-8 fade-in">
+            <div id="dnsResults" class="mt-10 fade-in">
                 <div class="overflow-x-auto rounded-2xl border border-white/10">
                     <table id="resultsTable" class="results-table" role="table" aria-describedby="tableDescription">
-                        <caption id="tableDescription" class="sr-only">DNS server performance comparison results</caption>
+                        <caption id="tableDescription" class="sr-only">DNS server performance comparison results with speed ratings</caption>
                         <thead>
                             <tr role="row">
-                                <th class="text-left py-4 px-6 cursor-pointer" 
+                                <th class="text-left py-5 px-6 cursor-pointer" 
                                     onclick="sortTable(0)" 
                                     scope="col"
                                     aria-sort="none"
@@ -887,7 +1055,7 @@
                                     DNS Server
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(1)"
                                     scope="col"
                                     aria-sort="none"
@@ -896,7 +1064,7 @@
                                     Min (ms)
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(2)"
                                     scope="col"
                                     aria-sort="none"
@@ -905,7 +1073,7 @@
                                     Median (ms)
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(3)"
                                     scope="col"
                                     aria-sort="none"
@@ -914,7 +1082,7 @@
                                     Avg (ms)
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(4)"
                                     scope="col"
                                     aria-sort="none"
@@ -922,6 +1090,11 @@
                                     role="columnheader">
                                     Max (ms)
                                     <span class="sr-only">(click to sort)</span>
+                                </th>
+                                <th class="text-center py-5 px-4" 
+                                    scope="col"
+                                    role="columnheader">
+                                    Rating
                                 </th>
                             </tr>
                         </thead>
@@ -933,21 +1106,21 @@
             </div>
 
             <!-- Best DNS Result -->
-            <div id="bestDNSContainer" class="mt-10 fade-in"></div>
+            <div id="bestDNSContainer" class="mt-12 fade-in"></div>
 
             <!-- Chart Section -->
             <div id="chartContainer" class="hidden mt-12 glass-card p-6 md:p-8 rounded-2xl bounce-in" role="region" aria-labelledby="chartTitle">
-                <h3 id="chartTitle" class="text-2xl font-bold text-center mb-6 text-cyan-300">DNS Speed Comparison</h3>
+                <h3 id="chartTitle" class="text-2xl font-bold text-center mb-6 text-cyan-300">DNS Speed Comparison Chart</h3>
                 <div class="chart-container">
                     <canvas id="dnsChart" role="img" aria-label="Bar chart showing DNS server response times in milliseconds"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Action Buttons Section -->
+        <!-- Action Buttons -->
         <div class="text-center mt-12 fade-in">
             <button id="cta" 
-                    class="glass-button text-white font-bold py-4 px-8 rounded-xl flex items-center gap-3 mx-auto text-lg"
+                    class="glass-button text-white font-bold py-4 px-10 rounded-xl flex items-center gap-3 mx-auto text-lg"
                     aria-describedby="shareButtonHelp">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m.684 2.684c-.174.404-.393.86-.593 1.316M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -964,46 +1137,46 @@
             <div class="grid md:grid-cols-2 gap-8 text-gray-200 leading-relaxed text-sm md:text-base">
                 <div class="space-y-4">
                     <div class="flex items-start gap-3">
-                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div class="w-3 h-3 bg-blue-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
                         <div>
-                            <h4 class="font-semibold text-white mb-1">Browser-Based Testing</h4>
+                            <h4 class="font-semibold text-white mb-2">Browser-Based Testing</h4>
                             <p>All tests run entirely in your browser using DNS-over-HTTPS (DoH) queries. No server-side processing, ensuring privacy and real-world results.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
-                        <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div class="w-3 h-3 bg-purple-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
                         <div>
-                            <h4 class="font-semibold text-white mb-1">Performance Metrics</h4>
+                            <h4 class="font-semibold text-white mb-2">Performance Metrics</h4>
                             <p>Measures full DoH round-trip times including HTTP/TLS overhead. Use results for relative comparison between DNS servers.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
-                        <div class="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div class="w-3 h-3 bg-green-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
                         <div>
-                            <h4 class="font-semibold text-white mb-1">Timeout Protection</h4>
+                            <h4 class="font-semibold text-white mb-2">Timeout Protection</h4>
                             <p>Each query times out after 5 seconds to ensure responsive testing. Servers showing "Unavailable" are either slow or unreachable.</p>
                         </div>
                     </div>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-start gap-3">
-                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div class="w-3 h-3 bg-cyan-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
                         <div>
-                            <h4 class="font-semibold text-white mb-1">Network Conditions</h4>
+                            <h4 class="font-semibold text-white mb-2">Network Conditions</h4>
                             <p>Results vary based on your current network, bandwidth, and geographic location. Run multiple tests for accurate comparison.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
-                        <div class="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div class="w-3 h-3 bg-yellow-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
                         <div>
-                            <h4 class="font-semibold text-white mb-1">Connection Caching</h4>
+                            <h4 class="font-semibold text-white mb-2">Connection Caching</h4>
                             <p>Implements intelligent caching to reuse warm connections and provide more accurate results for subsequent queries.</p>
                         </div>
                     </div>
                     <div class="flex items-start gap-3">
-                        <div class="w-2 h-2 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div class="w-3 h-3 bg-pink-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
                         <div>
-                            <h4 class="font-semibold text-white mb-1">No Data Collection</h4>
+                            <h4 class="font-semibold text-white mb-2">No Data Collection</h4>
                             <p>Zero personal data collection. All testing happens locally in your browser without sending information to external servers.</p>
                         </div>
                     </div>
@@ -1017,7 +1190,7 @@
                 <a href="https://github.com/Argh94" target="_blank" rel="noopener noreferrer" 
                    class="flex items-center gap-3 text-cyan-300 hover:text-cyan-100 transition group"
                    aria-label="Follow @Argh94 on GitHub">
-                    <div class="p-2 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition">
+                    <div class="p-3 bg-gray-800 rounded-xl group-hover:bg-gray-700 transition">
                         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
                         </svg>
@@ -1048,7 +1221,7 @@
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 id="websiteModalTitle" class="text-2xl font-bold text-white">Manage Test Websites</h3>
-                <button class="close text-gray-400 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition" 
+                <button class="close text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition" 
                         aria-label="Close dialog">&times;</button>
             </div>
             
@@ -1061,7 +1234,7 @@
                            class="glass-input"
                            aria-label="Enter website hostname">
                     <button id="addHostname" 
-                            class="glass-button px-6 py-3 rounded-xl whitespace-nowrap">
+                            class="glass-button px-8 py-3 rounded-xl whitespace-nowrap">
                         Add
                     </button>
                 </div>
@@ -1081,7 +1254,7 @@
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6">
                 <h3 id="dohModalTitle" class="text-2xl font-bold text-white">Suggest DNS Server</h3>
-                <button class="close text-gray-400 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition"
+                <button class="close text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition"
                         aria-label="Close dialog">&times;</button>
             </div>
             
@@ -1117,7 +1290,7 @@
             </div>
             
             <button id="suggestDoHServer" 
-                    class="w-full mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition">
+                    class="w-full mt-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition">
                 Submit to GitHub Issues
             </button>
         </div>
@@ -1126,15 +1299,16 @@
     <!-- JavaScript -->
     <script src="script.js" defer></script>
     
-    <!-- Enhanced Particles Script with Better Performance -->
+    <!-- Enhanced Orbital Particles System -->
     <script>
-        // Optimized Particle System with Advanced Effects
+        // Advanced Orbital Particle System with Multiple Layers
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
         let animationFrameId = null;
         let isVisible = true;
         let isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        let mousePos = { x: 0, y: 0 };
 
         function resizeCanvas() {
             const rect = canvas.getBoundingClientRect();
@@ -1144,82 +1318,138 @@
         resizeCanvas();
         window.addEventListener('resize', resizeCanvas);
 
+        // Mouse interaction
+        window.addEventListener('mousemove', (e) => {
+            mousePos.x = e.clientX;
+            mousePos.y = e.clientY;
+        });
+
         class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                const speed = Math.random() * 1.5 + 0.5;
-                const angle = Math.random() * Math.PI * 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.radius = Math.random() * 2 + 1;
-                this.color = this.getRandomColor();
-                this.life = 0;
-                this.maxLife = Math.random() * 150 + 100;
-                this.pulsePhase = Math.random() * Math.PI * 2;
+            constructor(layer = 1) {
+                this.layer = layer;
+                this.reset();
+                
+                // Different properties for different layers
+                if (layer === 1) {
+                    // Main layer
+                    this.vx = (Math.random() - 0.5) * 1.5;
+                    this.vy = (Math.random() - 0.5) * 1.5;
+                    this.radius = Math.random() * 2.5 + 1;
+                    this.baseRadius = this.radius;
+                    this.maxLife = Math.random() * 200 + 150;
+                } else if (layer === 2) {
+                    // Secondary layer
+                    this.vx = (Math.random() - 0.5) * 0.8;
+                    this.vy = (Math.random() - 0.5) * 0.8;
+                    this.radius = Math.random() * 1.5 + 0.5;
+                    this.baseRadius = this.radius;
+                    this.maxLife = Math.random() * 300 + 200;
+                } else {
+                    // Background layer
+                    this.vx = (Math.random() - 0.5) * 0.3;
+                    this.vy = (Math.random() - 0.5) * 0.3;
+                    this.radius = Math.random() * 1 + 0.2;
+                    this.baseRadius = this.radius;
+                    this.maxLife = Math.random() * 500 + 300;
+                }
             }
 
-            getRandomColor() {
-                const colors = [
-                    `hsl(200, 100%, 70%)`,
-                    `hsl(220, 100%, 75%)`,
-                    `hsl(240, 100%, 80%)`,
-                    `hsl(180, 100%, 70%)`,
-                    `hsl(160, 100%, 75%)`
-                ];
-                return colors[Math.floor(Math.random() * colors.length)];
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.life = 0;
+                this.pulsePhase = Math.random() * Math.PI * 2;
+                this.hue = Math.random() * 60 + 180; // Blue to cyan range
             }
 
             update() {
+                // Mouse interaction
+                const dx = mousePos.x - this.x;
+                const dy = mousePos.y - this.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    const force = (100 - distance) / 100;
+                    this.vx -= (dx / distance) * force * 0.01;
+                    this.vy -= (dy / distance) * force * 0.01;
+                }
+
                 this.x += this.vx;
                 this.y += this.vy;
                 this.life++;
-                this.pulsePhase += 0.1;
+                this.pulsePhase += 0.1 * this.layer;
 
-                // Enhanced boundary handling with glow effect
+                // Boundary handling with wrap-around
                 if (this.x < -this.radius) this.x = canvas.width + this.radius;
                 if (this.x > canvas.width + this.radius) this.x = -this.radius;
                 if (this.y < -this.radius) this.y = canvas.height + this.radius;
                 if (this.y > canvas.height + this.radius) this.y = -this.radius;
 
-                // Regenerate particles if life exceeds max
+                // Regenerate if life exceeds max
                 if (this.life >= this.maxLife) {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.life = 0;
+                    this.reset();
                 }
+
+                // Apply friction
+                this.vx *= 0.99;
+                this.vy *= 0.99;
             }
 
             draw() {
                 const pulseScale = 1 + Math.sin(this.pulsePhase) * 0.3;
+                const currentRadius = this.radius * pulseScale;
                 
                 ctx.save();
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius * pulseScale, 0, Math.PI * 2);
+                ctx.arc(this.x, this.y, currentRadius, 0, Math.PI * 2);
                 
-                // Enhanced gradient for better glow effect
+                // Enhanced gradient with layer-specific colors
+                const hue = this.hue;
+                const centerColor = `hsla(${hue}, 100%, 80%, ${0.8 + this.layer * 0.1})`;
+                const midColor = `hsla(${hue}, 100%, 60%, 0.4)`;
+                const edgeColor = `hsla(${hue}, 100%, 40%, 0)`;
+                
                 const gradient = ctx.createRadialGradient(
                     this.x, this.y, 0,
-                    this.x, this.y, this.radius * 3 * pulseScale
+                    this.x, this.y, currentRadius * 4 * this.layer
                 );
-                gradient.addColorStop(0, this.color.replace('70%', '90%'));
-                gradient.addColorStop(0.5, this.color);
-                gradient.addColorStop(1, 'transparent');
+                gradient.addColorStop(0, centerColor);
+                gradient.addColorStop(0.3, midColor);
+                gradient.addColorStop(1, edgeColor);
                 
                 ctx.fillStyle = gradient;
                 ctx.fill();
+                
+                // Core particle
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, currentRadius * 0.5, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${hue}, 100%, 90%, 0.9)`;
+                ctx.fill();
+                
                 ctx.restore();
             }
         }
 
         function initParticles() {
-            if (isReducedMotion) return; // Skip for reduced motion preference
+            if (isReducedMotion) return;
             
             particles = [];
-            const particleCount = Math.min(100, Math.floor(canvas.width * canvas.height / 8000));
             
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
+            // Create different layers
+            const mainLayerCount = Math.min(60, Math.floor(canvas.width * canvas.height / 15000));
+            const secondaryLayerCount = Math.min(40, Math.floor(canvas.width * canvas.height / 20000));
+            const backgroundLayerCount = Math.min(30, Math.floor(canvas.width * canvas.height / 25000));
+            
+            for (let i = 0; i < mainLayerCount; i++) {
+                particles.push(new Particle(1));
+            }
+            
+            for (let i = 0; i < secondaryLayerCount; i++) {
+                particles.push(new Particle(2));
+            }
+            
+            for (let i = 0; i < backgroundLayerCount; i++) {
+                particles.push(new Particle(3));
             }
         }
 
@@ -1227,47 +1457,53 @@
             const dx = p1.x - p2.x;
             const dy = p1.y - p2.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            return distance < 80;
+            return distance < (80 * p1.layer + 40 * p2.layer) / 2;
         }
 
         function drawConnections() {
             if (isReducedMotion) return;
             
             ctx.save();
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 0.5;
             
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
-                    if (checkCollision(particles[i], particles[j])) {
+                    const p1 = particles[i];
+                    const p2 = particles[j];
+                    
+                    if (checkCollision(p1, p2)) {
                         const distance = Math.sqrt(
-                            Math.pow(particles[i].x - particles[j].x, 2) + 
-                            Math.pow(particles[i].y - particles[j].y, 2)
+                            Math.pow(p1.x - p2.x, 2) + 
+                            Math.pow(p1.y - p2.y, 2)
                         );
                         
-                        const opacity = Math.max(0, 1 - (distance / 80));
+                        const maxDistance = (80 * p1.layer + 40 * p2.layer) / 2;
+                        const opacity = Math.max(0, 1 - (distance / maxDistance)) * 0.3;
                         
                         ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.moveTo(p1.x, p1.y);
+                        ctx.lineTo(p2.x, p2.y);
                         
                         // Enhanced gradient for connections
                         const gradient = ctx.createLinearGradient(
-                            particles[i].x, particles[i].y,
-                            particles[j].x, particles[j].y
+                            p1.x, p1.y, p2.x, p2.y
                         );
-                        gradient.addColorStop(0, particles[i].color.replace('70%', '60%'));
-                        gradient.addColorStop(1, particles[j].color.replace('70%', '60%'));
+                        const hue1 = p1.hue;
+                        const hue2 = p2.hue;
+                        
+                        gradient.addColorStop(0, `hsla(${hue1}, 100%, 60%, ${opacity})`);
+                        gradient.addColorStop(1, `hsla(${hue2}, 100%, 60%, ${opacity})`);
                         
                         ctx.strokeStyle = gradient;
-                        ctx.globalAlpha = opacity * 0.6;
                         ctx.stroke();
 
                         // Connection glow effect
-                        const midX = (particles[i].x + particles[j].x) / 2;
-                        const midY = (particles[i].y + particles[j].y) / 2;
+                        const midX = (p1.x + p2.x) / 2;
+                        const midY = (p1.y + p2.y) / 2;
                         
                         ctx.beginPath();
-                        const glowGradient = ctx.createRadialGradient(midX, midY, 0, midX, midY, 30);
+                        const glowRadius = 30 * Math.min(p1.layer, p2.layer);
+                        const glowGradient = ctx.createRadialGradient(midX, midY, 0, midX, midY, glowRadius);
                         glowGradient.addColorStop(0, `rgba(255, 255, 255, ${opacity * 0.4})`);
                         glowGradient.addColorStop(1, 'transparent');
                         ctx.fillStyle = glowGradient;
@@ -1282,7 +1518,7 @@
         function animate() {
             if (!isVisible || isReducedMotion) return;
             
-            ctx.fillStyle = 'rgba(12, 12, 12, 0.15)';
+            ctx.fillStyle = 'rgba(15, 12, 41, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             particles.forEach(particle => {
@@ -1313,8 +1549,8 @@
                 initParticles();
                 animate();
             } else {
-                // Simple static background for reduced motion
-                ctx.fillStyle = 'rgba(12, 12, 12, 0.3)';
+                // Static background for reduced motion
+                ctx.fillStyle = 'rgba(15, 12, 41, 0.3)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
             }
         });
@@ -1326,7 +1562,7 @@
             }
         });
 
-        // Dynamic particle count adjustment based on screen size
+        // Dynamic particle adjustment
         let resizeTimeout;
         window.addEventListener('resize', function() {
             clearTimeout(resizeTimeout);
@@ -1334,7 +1570,7 @@
                 if (!isReducedMotion) {
                     initParticles();
                 }
-            }, 250);
+            }, 300);
         });
     </script>
 </body>
