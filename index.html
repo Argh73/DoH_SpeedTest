@@ -4,15 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoHSpeedTest - تست سرعت سرورهای DNS</title>
-    <meta name="description" content="تست سرعت سرورهای DNS-over-HTTPS با رابط کاربری مدرن">
-    <meta name="keywords" content="DNS, DoH, Speed Test, سرعت DNS, امنیت">
-    <meta name="author" content="DoHSpeedTest">
-    
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="DoHSpeedTest - تست سرعت سرورهای DNS">
-    <meta property="og:description" content="تست سرعت و عملکرد سرورهای DNS-over-HTTPS">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="">
     
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
@@ -72,11 +63,11 @@
                 <table id="resultsTable" role="table" aria-label="نتایج تست سرعت DNS">
                     <thead>
                         <tr>
-                            <th scope="col" onclick="sortTable(0)" aria-sort="none">سرور DNS</th>
-                            <th scope="col" onclick="sortTable(1)" aria-sort="none">حداقل (ms)</th>
-                            <th scope="col" onclick="sortTable(2)" aria-sort="none">میانه (ms)</th>
-                            <th scope="col" onclick="sortTable(3)" aria-sort="none">میانگین (ms)</th>
-                            <th scope="col" onclick="sortTable(4)" aria-sort="none">حداکثر (ms)</th>
+                            <th scope="col" onclick="sortTable(0)">سرور DNS</th>
+                            <th scope="col" onclick="sortTable(1)">حداقل (ms)</th>
+                            <th scope="col" onclick="sortTable(2)">میانه (ms)</th>
+                            <th scope="col" onclick="sortTable(3)">میانگین (ms)</th>
+                            <th scope="col" onclick="sortTable(4)">حداکثر (ms)</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,71 +98,6 @@
                 </svg>
                 به اشتراک‌گذاری
             </button>
-        </div>
-        
-        <!-- Features & Info -->
-        <div class="glass-card mt-8">
-            <div class="space-y-5">
-                <h2>ویژگی‌ها</h2>
-                <ul class="list-disc list-inside space-y-2 text-gray-300">
-                    <li>🌐 <strong>تست بیش از ۸۰ سرور DoH</strong> - از جمله Cloudflare، Google، OpenDNS و سرورهای داخلی</li>
-                    <li>⚡ <strong>سنجش دقیق سرعت</strong> - محاسبه حداقل، میانه، میانگین و حداکثر زمان پاسخ</li>
-                    <li>📊 <strong>نمودار مقایسه‌ای</strong> - نمایش بصری عملکرد سرورها</li>
-                    <li>🔒 <strong>امنیت بالا</strong> - استفاده از پروتکل DoH برای رمزنگاری درخواست‌ها</li>
-                    <li>📱 <strong>رابط کاربری مدرن</strong> - طراحی ریسپانسیو با Glassmorphism</li>
-                    <li>🚀 <strong>عملکرد بهینه</strong> - تست همزمان و بهینه‌سازی شده</li>
-                </ul>
-                
-                <h3>سرورهای پشتیبانی شده:</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm">
-                    <div>Cloudflare</div>
-                    <div>Google DNS</div>
-                    <div>OpenDNS</div>
-                    <div>Quad9</div>
-                    <div>AdGuard</div>
-                    <div>NextDNS</div>
-                    <div>Shecan (شکن)</div>
-                    <div>Begzar (بگذر)</div>
-                </div>
-                
-                <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4 mt-6">
-                    <h4 class="font-bold text-blue-300 mb-2">نحوه استفاده:</h4>
-                    <ol class="list-decimal list-inside space-y-1 text-sm text-blue-200">
-                        <li>روی دکمه "شروع تست سرعت" کلیک کنید</li>
-                        <li>منتظر تکمیل تست‌ها باشید (۲-۳ دقیقه)</li>
-                        <li>نتایج و بهترین DNS را مشاهده کنید</li>
-                        <li>IPهای بهترین سرور را کپی کرده در روتر یا تنظیمات سیستم استفاده کنید</li>
-                    </ol>
-                </div>
-                
-                <div class="text-center mt-6">
-                    <a href="https://github.com/Argh94/DoHSpeedTest" class="bg-gradient-purple-pink" target="_blank" rel="noopener">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                        مشاهده در GitHub
-                    </a>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Disclaimer -->
-        <div class="glass-card mt-8">
-            <h3>توضیحات و هشدارها</h3>
-            <div class="bg-yellow-900/20 border border-yellow-700 rounded-lg p-4">
-                <p class="text-yellow-200 text-sm">
-                    ⚠️ <strong>توجه:</strong> این ابزار صرفاً برای تست و مقایسه سرعت سرورهای DNS طراحی شده است. 
-                    نتایج ممکن است بر اساس موقعیت جغرافیایی، زمان تست و کیفیت اتصال اینترنت شما متفاوت باشد.
-                    برای استفاده طولانی‌مدت، تحقیقات بیشتری انجام دهید.
-                </p>
-            </div>
-            
-            <div class="bg-blue-900/20 border border-blue-700 rounded-lg p-4 mt-4">
-                <p class="text-blue-200 text-sm">
-                    🔒 <strong>حریم خصوصی:</strong> تمام تست‌ها در مرورگر شما انجام می‌شود و هیچ داده‌ای به سرورهای ما ارسال نمی‌گردد. 
-                    DNS-over-HTTPS تمام درخواست‌ها را رمزنگاری می‌کند.
-                </p>
-            </div>
         </div>
     </div>
     
@@ -235,13 +161,7 @@
     </div>
     
     <!-- Required Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/dns-packet@5.4.0/index.js" 
-            integrity="sha384-fd5V1W6Y3CXgP2L4cT6+0myneUE9T7xht3YTBGbZpO08X7ZqL6hD3Q4U8K2lYlXv" 
-            crossorigin="anonymous"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" 
-            integrity="sha384-DQK0K2Q7KQ0fb5bD2L2U6H9U0J2dQ8yU8K2lYlXvHyPx+6gJ5Q4U8K2lYlXvHyPx" 
-            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     
     <!-- Main Script -->
     <script src="script.js"></script>
