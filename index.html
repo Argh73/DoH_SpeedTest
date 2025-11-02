@@ -68,12 +68,11 @@
                         'float': 'float 6s ease-in-out infinite',
                         'shimmer': 'shimmer 3s ease-in-out infinite',
                         'pulse-glow': 'pulse-glow 2s ease-in-out infinite alternate',
-                        'gradient-shift': 'gradientShift 15s ease infinite',
                     },
                     keyframes: {
                         glow: {
-                            '0%': { 'box-shadow': '0 0 20px #00d4ff, 0 0 30px #00d4ff, 0 0 40px #00d4ff' },
-                            '100%': { 'box-shadow': '0 0 30px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff' }
+                            'from': { 'box-shadow': '0 0 20px #00d4ff, 0 0 30px #00d4ff, 0 0 40px #00d4ff' },
+                            'to': { 'box-shadow': '0 0 30px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff' }
                         },
                         float: {
                             '0%, 100%': { transform: 'translateY(0px)' },
@@ -92,11 +91,6 @@
                                 'box-shadow': '0 0 30px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.4)',
                                 'border-color': 'rgba(59, 130, 246, 0.6)'
                             }
-                        },
-                        gradientShift: {
-                            '0%': { backgroundPosition: '0% 50%' },
-                            '50%': { backgroundPosition: '100% 50%' },
-                            '100%': { backgroundPosition: '0% 50%' }
                         }
                     }
                 }
@@ -112,80 +106,51 @@
     <!-- Custom CSS -->
     <style>
         /* ============================================
-           ENHANCED COSMIC BACKGROUND
+           ADVANCED COSMIC BACKGROUND
         ============================================ */
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             line-height: 1.6;
             
-            /* Dynamic cosmic background with multiple layers */
+            /* Multi-layer cosmic gradient */
             background: 
-                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(59, 130, 246, 0.18) 0%, transparent 50%),
-                radial-gradient(ellipse at 20% 80%, rgba(16, 185, 129, 0.12) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 80%, rgba(239, 68, 68, 0.10) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 50%, rgba(124, 58, 237, 0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at top left, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at top right, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(16, 185, 129, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom right, rgba(239, 68, 68, 0.1) 0%, transparent 50%),
                 linear-gradient(135deg, 
                     #0f0c29 0%, 
-                    #1a0b3d 8%,
-                    #24243e 16%, 
-                    #302b63 24%,
-                    #1a0b3d 32%,
-                    #0f0c29 40%, 
-                    #24243e 48%,
-                    #302b63 56%,
-                    #1a0b3d 64%,
-                    #0f0c29 72%, 
-                    #24243e 80%,
-                    #302b63 88%,
-                    #1a0b3d 96%,
+                    #24243e 12%, 
+                    #1a0b3d 25%, 
+                    #0f0c29 37%, 
+                    #302b63 50%, 
+                    #24243e 62%, 
+                    #1a0b3d 75%, 
+                    #0f0c29 87%, 
                     #000000 100%);
-            background-size: 200% 200%, 180% 180%, 220% 220%, 160% 160%, 240% 240%, 300% 300%;
-            animation: cosmicFlow 30s ease infinite;
+            background-size: 400% 400%, 300% 300%, 500% 500%, 350% 350%, 600% 600%;
+            animation: cosmicFlow 25s ease infinite;
             min-height: 100vh;
             color: #ffffff;
             overflow-x: hidden;
-            position: relative;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(circle at 30% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 70% 70%, rgba(255, 16, 240, 0.08) 0%, transparent 50%);
-            pointer-events: none;
-            z-index: 1;
-            animation: backgroundFloat 25s ease-in-out infinite;
         }
 
         @keyframes cosmicFlow {
             0% { 
-                background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 50% 50%, 0% 50%;
+                background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 50%;
             }
             25% { 
-                background-position: 100% 50%, 0% 50%, 100% 0%, 0% 100%, 0% 0%, 50% 0%;
+                background-position: 100% 50%, 0% 50%, 100% 0%, 0% 100%, 50% 0%;
             }
             50% { 
-                background-position: 50% 100%, 50% 100%, 0% 50%, 100% 50%, 100% 100%, 100% 100%;
+                background-position: 50% 100%, 50% 100%, 0% 50%, 100% 50%, 100% 100%;
             }
             75% { 
-                background-position: 0% 50%, 100% 50%, 50% 0%, 50% 100%, 0% 0%, 0% 0%;
+                background-position: 0% 50%, 100% 50%, 50% 0%, 50% 100%, 0% 0%;
             }
             100% { 
-                background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 50% 50%, 0% 50%;
+                background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 50%;
             }
-        }
-
-        @keyframes backgroundFloat {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(20px, -20px) scale(1.1); }
-            50% { transform: translate(-20px, 20px) scale(0.9); }
-            75% { transform: translate(20px, 10px) scale(1.05); }
         }
 
         /* ============================================
@@ -197,9 +162,9 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 2;
+            z-index: 1;
             pointer-events: none;
-            opacity: 0.6;
+            opacity: 0.7;
         }
 
         /* ============================================
@@ -210,21 +175,20 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 120px;
-            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="%23ff10f0" stop-opacity="0.4"/><stop offset="50%" stop-color="%2300d4ff" stop-opacity="0.6"/><stop offset="100%" stop-color="%237c3aed" stop-opacity="0.4"/></linearGradient></defs><path d="M0,100 Q300,50 600,100 T1200,100 L1200,200 L0,200 Z" fill="url(%23wave1)"/></svg>') repeat-x;
-            background-size: 2400px 120px;
-            animation: waveMove 30s linear infinite;
+            height: 200px;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="%23ff10f0" stop-opacity="0.3"/><stop offset="50%" stop-color="%2300d4ff" stop-opacity="0.4"/><stop offset="100%" stop-color="%237c3aed" stop-opacity="0.3"/></linearGradient></defs><path d="M0,100 Q300,50 600,100 T1200,100 L1200,200 L0,200 Z" fill="url(%23wave1)"/></svg>') repeat-x;
+            background-size: 2400px 200px;
+            animation: waveMove 25s linear infinite;
             pointer-events: none;
-            z-index: 3;
-            opacity: 0.6;
+            z-index: 2;
         }
 
         .wave:nth-child(2) {
-            height: 80px;
-            animation-delay: -10s;
-            animation-duration: 40s;
-            opacity: 0.4;
-            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="%2300ffff" stop-opacity="0.3"/><stop offset="50%" stop-color="%23ff10f0" stop-opacity="0.4"/><stop offset="100%" stop-color="%2300ff41" stop-opacity="0.3"/></linearGradient></defs><path d="M0,120 Q300,70 600,120 T1200,120 L1200,200 L0,200 Z" fill="url(%23wave2)"/></svg>') repeat-x;
+            height: 150px;
+            animation-delay: -8s;
+            animation-duration: 35s;
+            opacity: 0.7;
+            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="%2300ffff" stop-opacity="0.2"/><stop offset="50%" stop-color="%23ff10f0" stop-opacity="0.3"/><stop offset="100%" stop-color="%2300ff41" stop-opacity="0.2"/></linearGradient></defs><path d="M0,120 Q300,70 600,120 T1200,120 L1200,200 L0,200 Z" fill="url(%23wave2)"/></svg>') repeat-x;
         }
 
         @keyframes waveMove {
@@ -240,7 +204,7 @@
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
+            border-radius: 24px;
             box-shadow: 
                 0 8px 32px rgba(0, 0, 0, 0.3),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2),
@@ -267,12 +231,12 @@
         }
 
         .glass-card:hover {
-            transform: translateY(-2px);
+            transform: translateY(-4px) scale(1.01);
             box-shadow: 
-                0 12px 40px rgba(0, 0, 0, 0.4),
+                0 16px 48px rgba(0, 0, 0, 0.4),
                 inset 0 1px 0 rgba(255, 255, 255, 0.25),
                 0 0 0 1px rgba(255, 255, 255, 0.1),
-                0 0 30px rgba(59, 130, 246, 0.2);
+                0 0 50px rgba(59, 130, 246, 0.2);
             border-color: rgba(255, 255, 255, 0.25);
         }
 
@@ -334,14 +298,14 @@
         .glass-button:hover {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
             border-color: rgba(59, 130, 246, 0.6);
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             box-shadow: 
-                0 10px 25px rgba(59, 130, 246, 0.4),
+                0 12px 35px rgba(59, 130, 246, 0.4),
                 0 0 20px rgba(139, 92, 246, 0.3);
         }
 
         .glass-button:active {
-            transform: translateY(0);
+            transform: translateY(-1px);
             transition: all 0.1s;
         }
 
@@ -364,8 +328,8 @@
         ============================================ */
         .spinner {
             display: inline-block;
-            width: 50px;
-            height: 50px;
+            width: 60px;
+            height: 60px;
             border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: #00d4ff;
@@ -387,13 +351,13 @@
 
         .progress-bar {
             width: 100%;
-            height: 6px;
+            height: 8px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            border-radius: 4px;
             overflow: hidden;
-            margin-top: 15px;
+            margin-top: 20px;
             box-shadow: 
-                inset 0 1px 3px rgba(0, 0, 0, 0.3),
+                inset 0 2px 4px rgba(0, 0, 0, 0.3),
                 0 1px 0 rgba(255, 255, 255, 0.2);
         }
 
@@ -401,7 +365,7 @@
             height: 100%;
             background: linear-gradient(90deg, #00d4ff, #8b5cf6, #00ff41, #ff10f0);
             background-size: 400% 100%;
-            border-radius: 3px;
+            border-radius: 4px;
             transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -430,30 +394,24 @@
         }
 
         /* ============================================
-           RESPONSIVE TABLE STYLES
+           MODERN TABLE STYLES
         ============================================ */
-        .results-table-container {
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 
-                0 8px 32px rgba(0, 0, 0, 0.3),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
         .results-table {
             border-collapse: separate;
             border-spacing: 0;
             width: 100%;
-            min-width: 800px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
         .results-table th {
             background: linear-gradient(135deg, #1e40af, #3730a3, #581c87);
             color: #ffffff;
             font-weight: 600;
-            padding: 14px 12px;
+            padding: 18px 16px;
             text-align: left;
             position: sticky;
             top: 0;
@@ -461,28 +419,27 @@
             transition: all 0.3s ease;
             user-select: none;
             border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-            font-size: 14px;
         }
 
         .results-table th:first-child {
             text-align: left;
-            padding-left: 20px;
-            min-width: 200px;
+            padding-left: 24px;
         }
 
         .results-table th:not(:first-child) {
             text-align: center;
-            min-width: 100px;
+            min-width: 140px;
         }
 
         .results-table th:hover {
             background: linear-gradient(135deg, #2563eb, #4f46e5, #7c3aed);
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
         .results-table th[aria-sort="ascending"]::after {
             content: " ▲";
-            font-size: 0.8em;
+            font-size: 0.9em;
             opacity: 0.9;
             margin-left: 8px;
             color: #00d4ff;
@@ -490,22 +447,21 @@
 
         .results-table th[aria-sort="descending"]::after {
             content: " ▼";
-            font-size: 0.8em;
+            font-size: 0.9em;
             opacity: 0.9;
             margin-left: 8px;
             color: #00d4ff;
         }
 
         .results-table td {
-            padding: 12px;
+            padding: 16px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.3s ease;
             background: rgba(255, 255, 255, 0.02);
-            font-size: 13px;
         }
 
         .results-table td:first-child {
-            padding-left: 20px;
+            padding-left: 24px;
             font-weight: 500;
         }
 
@@ -513,6 +469,7 @@
             text-align: center;
             font-family: 'Fira Code', monospace;
             font-weight: 600;
+            font-size: 15px;
         }
 
         .results-table tbody tr {
@@ -521,6 +478,8 @@
 
         .results-table tbody tr:hover {
             background: rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
         }
 
         .results-table tbody tr:nth-child(even) {
@@ -531,339 +490,115 @@
             background: rgba(59, 130, 246, 0.12);
         }
 
-        /* Details Row Styles */
-        .details-row {
-            background: rgba(0, 0, 0, 0.3) !important;
-            animation: slideDown 0.3s ease-out;
-        }
-
-        .details-row td {
-            padding: 20px;
-            background: transparent !important;
-            border-top: 2px solid rgba(0, 212, 255, 0.3);
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                max-height: 0;
-            }
-            to {
-                opacity: 1;
-                max-height: 200px;
-            }
-        }
-
         /* ============================================
-           SPEED BADGES
+           SPEED COMPARISON BADGES
         ============================================ */
         .speed-badge {
             display: inline-flex;
             align-items: center;
             padding: 4px 12px;
-            border-radius: 16px;
-            font-size: 11px;
-            font-weight: 700;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
         }
 
         .speed-excellent {
             background: linear-gradient(135deg, #00ff41, #00cc33);
             color: #000;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
         }
 
         .speed-good {
             background: linear-gradient(135deg, #00d4ff, #0ea5e9);
             color: #000;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
         }
 
         .speed-average {
             background: linear-gradient(135deg, #ff10f0, #d946ef);
             color: #fff;
+            box-shadow: 0 0 20px rgba(255, 16, 240, 0.4);
         }
 
         .speed-slow {
             background: linear-gradient(135deg, #f59e0b, #d97706);
             color: #000;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
         }
 
         /* ============================================
-           COPY BUTTONS
+           COPY BUTTON STYLES
         ============================================ */
         .copy-btn {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(139, 92, 246, 0.2));
             border: 1px solid rgba(59, 130, 246, 0.4);
             color: #00d4ff;
-            padding: 6px 12px;
-            border-radius: 10px;
-            font-size: 12px;
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 13px;
             font-weight: 600;
             transition: all 0.3s ease;
             cursor: pointer;
-            margin-left: 8px;
+            margin-left: 12px;
             display: inline-flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
             backdrop-filter: blur(10px);
         }
 
         .copy-btn:hover {
             background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(139, 92, 246, 0.3));
             color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
         }
 
         .copy-btn.copied {
             background: linear-gradient(135deg, rgba(34, 197, 94, 0.3), rgba(16, 185, 129, 0.3));
             border-color: rgba(34, 197, 94, 0.6);
             color: #86efac;
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.5);
         }
 
         /* ============================================
-           RESPONSIVE DESIGN
-        ============================================ */
-        @media (max-width: 1024px) {
-            .results-table-container {
-                margin: 0 -1rem;
-                border-radius: 0;
-            }
-            
-            .results-table {
-                min-width: 700px;
-            }
-            
-            .results-table th,
-            .results-table td {
-                padding: 10px 8px;
-                font-size: 13px;
-            }
-            
-            .results-table th:first-child,
-            .results-table td:first-child {
-                padding-left: 16px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-
-            .glass-card {
-                border-radius: 16px;
-                padding: 1.5rem;
-                margin-bottom: 1rem;
-            }
-
-            /* Stack buttons on mobile */
-            .control-buttons {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .secondary-buttons {
-                flex-direction: row;
-                gap: 0.75rem;
-            }
-
-            /* Improve mobile table display */
-            .results-table-container {
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .results-table {
-                min-width: 600px;
-            }
-
-            .results-table th,
-            .results-table td {
-                padding: 8px 6px;
-                font-size: 12px;
-            }
-
-            .results-table th:first-child,
-            .results-table td:first-child {
-                padding-left: 12px;
-            }
-
-            .copy-btn {
-                padding: 4px 8px;
-                font-size: 11px;
-            }
-
-            /* Mobile waves */
-            .wave {
-                height: 60px;
-                background-size: 1200px 60px;
-            }
-
-            .wave:nth-child(2) {
-                height: 40px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .results-table th,
-            .results-table td {
-                padding: 6px 4px;
-                font-size: 11px;
-            }
-
-            .spinner {
-                width: 40px;
-                height: 40px;
-            }
-
-            .control-buttons .glass-button {
-                padding: 12px 16px;
-                font-size: 14px;
-            }
-
-            .secondary-buttons .glass-button {
-                padding: 10px 14px;
-                font-size: 12px;
-            }
-        }
-
-        /* ============================================
-           UTILITY CLASSES
-        ============================================ */
-        .hidden { display: none !important; }
-        .fade-in { animation: fadeIn 0.8s ease-in-out; }
-        .slide-up { animation: slideUp 0.8s ease-out; }
-        .bounce-in { animation: bounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes bounceIn {
-            from {
-                opacity: 0;
-                transform: scale(0.8) translateY(20px);
-            }
-            50% {
-                opacity: 0.8;
-                transform: scale(1.05) translateY(-2px);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        /* ============================================
-           BEST DNS CARD
-        ============================================ */
-        .best-dns-card {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 16px;
-            padding: 2rem;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(20px);
-        }
-
-        .best-dns-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #00ff41, #16a34a, #00ff41);
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        .best-dns-card h3 {
-            color: #86efac;
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-        }
-
-        .best-dns-card .dns-name {
-            font-family: 'Fira Code', monospace;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 0.75rem;
-        }
-
-        .best-dns-card .dns-ips {
-            font-family: 'Fira Code', monospace;
-            color: #d1d5db;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            word-break: break-all;
-            font-size: 14px;
-        }
-
-        .copy-ips-btn {
-            background: linear-gradient(135deg, #00ff41, #16a34a);
-            color: #000;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 14px;
-        }
-
-        .copy-ips-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
-        }
-
-        .copy-ips-btn:disabled {
-            background: linear-gradient(135deg, #6b7280, #4b5563);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-            color: #ffffff;
-        }
-
-        /* ============================================
-           NOTIFICATIONS & MODALS
+           NOTIFICATION SYSTEM
         ============================================ */
         .notification {
             position: fixed;
-            top: 20px;
-            right: 20px;
+            top: 24px;
+            right: 24px;
             z-index: 1000;
             transform: translateX(400px);
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 12px;
+            border-radius: 16px;
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             box-shadow: 
                 0 12px 40px rgba(0, 0, 0, 0.3),
-                0 4px 12px rgba(0, 0, 0, 0.2);
+                0 4px 12px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.15);
             overflow: hidden;
-            max-width: 350px;
+        }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: notificationShimmer 2s infinite;
+        }
+
+        @keyframes notificationShimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
         .notification.show {
@@ -890,10 +625,13 @@
             border-color: rgba(252, 211, 77, 0.5);
         }
 
+        /* ============================================
+           MODAL SYSTEM
+        ============================================ */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             display: flex;
@@ -903,7 +641,6 @@
             opacity: 0;
             visibility: hidden;
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 1rem;
         }
 
         .modal-overlay.show {
@@ -916,19 +653,117 @@
             backdrop-filter: blur(25px) saturate(180%);
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 2rem;
-            max-width: 500px;
-            width: 100%;
+            max-width: 520px;
+            width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            transform: scale(0.9) translateY(20px);
+            transform: scale(0.9) translateY(30px);
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.5);
+            box-shadow: 
+                0 25px 70px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
         }
 
         .modal-overlay.show .modal-content {
             transform: scale(1) translateY(0);
+        }
+
+        /* ============================================
+           INPUT STYLES
+        ============================================ */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px) saturate(180%);
+            -webkit-backdrop-filter: blur(15px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 14px;
+            padding: 14px 18px;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 15px;
+        }
+
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(0, 212, 255, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 0 0 3px rgba(0, 212, 255, 0.1),
+                0 8px 25px rgba(0, 212, 255, 0.2);
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+        ============================================ */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .glass-card {
+                border-radius: 20px;
+                padding: 1.5rem;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 12px 10px;
+                font-size: 14px;
+            }
+
+            .results-table th:first-child,
+            .results-table td:first-child {
+                padding-left: 16px;
+            }
+
+            .notification {
+                right: 12px;
+                left: 12px;
+                transform: translateY(-100px);
+            }
+
+            .notification.show {
+                transform: translateY(0);
+            }
+
+            .modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .glass-button {
+                padding: 14px 18px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .results-table {
+                font-size: 13px;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px 6px;
+            }
+
+            .results-table th:first-child,
+            .results-table td:first-child {
+                padding-left: 12px;
+            }
+
+            .spinner {
+                width: 50px;
+                height: 50px;
+            }
         }
 
         /* ============================================
@@ -963,6 +798,147 @@
                 scroll-behavior: auto !important;
             }
         }
+
+        /* ============================================
+           UTILITY ANIMATIONS
+        ============================================ */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.8s ease-in-out; }
+        .slide-up { animation: slideUp 0.8s ease-out; }
+        .bounce-in { animation: bounceIn 1s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8) translateY(30px);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05) translateY(-5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* ============================================
+           CHART STYLES
+        ============================================ */
+        .chart-container {
+            position: relative;
+            height: 420px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 320px;
+                padding: 16px;
+            }
+        }
+
+        /* ============================================
+           BEST DNS CARD
+        ============================================ */
+        .best-dns-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(20px);
+        }
+
+        .best-dns-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #00ff41, #16a34a, #00ff41);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        .best-dns-card h3 {
+            color: #86efac;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 1.2rem;
+        }
+
+        .best-dns-card .dns-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+        }
+
+        .best-dns-card .dns-ips {
+            font-family: 'Fira Code', monospace;
+            color: #d1d5db;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            word-break: break-all;
+            font-size: 14px;
+        }
+
+        .copy-ips-btn {
+            background: linear-gradient(135deg, #00ff41, #16a34a);
+            color: #000;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .copy-ips-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+        }
+
+        .copy-ips-btn:disabled {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            color: #ffffff;
+        }
     </style>
 </head>
 <body class="text-white min-h-screen">
@@ -974,25 +950,29 @@
     <div class="wave"></div>
 
     <!-- Notification Container -->
-    <div id="notification-container" class="fixed top-5 right-5 z-50 space-y-2"></div>
+    <div id="notification-container" class="fixed top-6 right-6 z-50 space-y-3"></div>
 
     <!-- No Script Notice -->
     <noscript>
-        <div class="fixed top-5 left-5 right-5 z-50 glass-card p-6 text-center max-w-2xl mx-auto">
+        <div class="fixed top-6 left-6 right-6 z-50 glass-card p-6 text-center max-w-2xl mx-auto">
             <h2 class="text-yellow-400 text-xl font-bold mb-2">JavaScript Required</h2>
             <p class="text-yellow-300">This advanced tool requires JavaScript to function properly.</p>
         </div>
     </noscript>
 
-    <div class="container mx-auto px-4 py-6 max-w-7xl relative z-10">
+    <div class="container mx-auto px-4 py-8 max-w-7xl relative z-10">
         <!-- Hero Section -->
-        <header class="glass-header text-center mb-8 p-6 md:p-10 rounded-2xl bounce-in">
-            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300">
-                DoHSpeedTest
-            </h1>
-            <p class="text-lg md:text-xl text-gray-200 mb-2">Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
+        <header class="glass-header text-center mb-10 p-8 md:p-12 rounded-3xl bounce-in">
+            <div class="relative">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300 animate-pulse-glow">
+                    DoHSpeedTest
+                </h1>
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-300 opacity-20 blur-3xl -z-10 animate-pulse"></div>
+                <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-500 rounded-full opacity-10 blur-3xl animate-float"></div>
+            </div>
+            <p class="text-xl md:text-2xl text-gray-200 mb-3 font-medium">Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
             <p class="text-sm text-gray-400 flex items-center justify-center gap-2">
-                <svg class="w-4 h-4 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+                <svg class="w-5 h-5 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"/>
                 </svg>
                 Real-time DNS speed testing with 50+ global servers
@@ -1000,21 +980,21 @@
         </header>
 
         <!-- Main Control Panel -->
-        <div class="glass-card p-4 md:p-8 mb-8 slide-up">
+        <div class="glass-card p-6 md:p-10 mb-10 slide-up">
             <!-- Control Buttons -->
-            <div class="control-buttons flex flex-col xl:flex-row gap-4 mb-8">
+            <div class="flex flex-col xl:flex-row gap-4 lg:gap-6 mb-10">
                 <!-- Primary Test Button -->
                 <div class="flex-1">
                     <button id="checkButton" 
-                            class="w-full glass-button text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 text-lg"
+                            class="w-full glass-button text-white font-bold py-5 px-8 rounded-2xl flex items-center justify-center gap-3 text-xl"
                             aria-describedby="checkButtonHelp"
                             aria-expanded="false">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                         <span id="checkButtonText">Start DNS Test</span>
                         <span id="checkButtonSpinner" class="hidden">
-                            <svg class="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-8 h-8 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                             </svg>
                         </span>
@@ -1022,12 +1002,12 @@
                     <div id="checkButtonHelp" class="sr-only">Begins DNS speed testing process. May take 30-60 seconds.</div>
                 </div>
                 
-                <!-- Secondary Action Buttons -->
-                <div class="secondary-buttons flex gap-3 lg:gap-4 xl:w-auto">
+                <!-- Secondary Actions -->
+                <div class="flex gap-3 lg:gap-4 xl:flex-col lg:flex-row">
                     <button id="editButton" 
-                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 whitespace-nowrap"
+                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 xl:w-full"
                             aria-describedby="editButtonHelp">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
                         <span class="hidden sm:inline">Edit Hosts</span>
@@ -1036,9 +1016,9 @@
                     <div id="editButtonHelp" class="sr-only">Manage the list of websites used for DNS testing</div>
                     
                     <button id="editDoHButton" 
-                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 whitespace-nowrap"
+                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 xl:w-full"
                             aria-describedby="dohButtonHelp">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                         </svg>
                         <span class="hidden sm:inline">Suggest DNS</span>
@@ -1049,10 +1029,10 @@
             </div>
 
             <!-- Loading State -->
-            <div id="loadingMessage" class="hidden text-center py-12" role="status" aria-live="polite" aria-busy="true">
-                <div class="mb-6">
-                    <div class="spinner mx-auto mb-4" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Test progress"></div>
-                    <p class="text-lg font-medium" id="loadingText">Initializing test...</p>
+            <div id="loadingMessage" class="hidden text-center py-16" role="status" aria-live="polite" aria-busy="true">
+                <div class="mb-8">
+                    <div class="spinner mx-auto mb-6" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Test progress"></div>
+                    <p class="text-xl font-semibold" id="loadingText">Initializing cosmic DNS test...</p>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
@@ -1060,13 +1040,13 @@
             </div>
 
             <!-- Results Table Section -->
-            <div id="dnsResults" class="mt-8 fade-in">
-                <div class="results-table-container overflow-x-auto">
+            <div id="dnsResults" class="mt-10 fade-in">
+                <div class="overflow-x-auto rounded-2xl border border-white/10">
                     <table id="resultsTable" class="results-table" role="table" aria-describedby="tableDescription">
-                        <caption id="tableDescription" class="sr-only">DNS server performance comparison results with detailed information</caption>
+                        <caption id="tableDescription" class="sr-only">DNS server performance comparison results with speed ratings</caption>
                         <thead>
                             <tr role="row">
-                                <th class="text-left py-4 px-4 cursor-pointer" 
+                                <th class="text-left py-5 px-6 cursor-pointer" 
                                     onclick="sortTable(0)" 
                                     scope="col"
                                     aria-sort="none"
@@ -1075,7 +1055,7 @@
                                     DNS Server
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-3 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(1)"
                                     scope="col"
                                     aria-sort="none"
@@ -1084,7 +1064,7 @@
                                     Min (ms)
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-3 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(2)"
                                     scope="col"
                                     aria-sort="none"
@@ -1093,7 +1073,7 @@
                                     Median (ms)
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-3 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(3)"
                                     scope="col"
                                     aria-sort="none"
@@ -1102,7 +1082,7 @@
                                     Avg (ms)
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-3 cursor-pointer" 
+                                <th class="text-center py-5 px-4 cursor-pointer" 
                                     onclick="sortTable(4)"
                                     scope="col"
                                     aria-sort="none"
@@ -1111,19 +1091,10 @@
                                     Max (ms)
                                     <span class="sr-only">(click to sort)</span>
                                 </th>
-                                <th class="text-center py-4 px-3 cursor-pointer" 
-                                    onclick="sortTable(5)"
+                                <th class="text-center py-5 px-4" 
                                     scope="col"
-                                    aria-sort="none"
-                                    tabindex="0"
                                     role="columnheader">
                                     Rating
-                                    <span class="sr-only">(click to sort)</span>
-                                </th>
-                                <th class="text-center py-4 px-3" 
-                                    scope="col"
-                                    role="columnheader">
-                                    Details
                                 </th>
                             </tr>
                         </thead>
@@ -1135,29 +1106,109 @@
             </div>
 
             <!-- Best DNS Result -->
-            <div id="bestDNSContainer" class="mt-10 fade-in"></div>
+            <div id="bestDNSContainer" class="mt-12 fade-in"></div>
 
             <!-- Chart Section -->
-            <div id="chartContainer" class="hidden mt-12 glass-card p-6 rounded-2xl bounce-in" role="region" aria-labelledby="chartTitle">
+            <div id="chartContainer" class="hidden mt-12 glass-card p-6 md:p-8 rounded-2xl bounce-in" role="region" aria-labelledby="chartTitle">
                 <h3 id="chartTitle" class="text-2xl font-bold text-center mb-6 text-cyan-300">DNS Speed Comparison Chart</h3>
-                <div class="relative h-96 bg-gray-900 bg-opacity-30 rounded-lg p-4">
+                <div class="chart-container">
                     <canvas id="dnsChart" role="img" aria-label="Bar chart showing DNS server response times in milliseconds"></canvas>
                 </div>
             </div>
         </div>
 
         <!-- Action Buttons -->
-        <div class="text-center mt-8 fade-in">
+        <div class="text-center mt-12 fade-in">
             <button id="cta" 
-                    class="glass-button text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 mx-auto"
+                    class="glass-button text-white font-bold py-4 px-10 rounded-xl flex items-center gap-3 mx-auto text-lg"
                     aria-describedby="shareButtonHelp">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m.684 2.684c-.174.404-.393.86-.593 1.316M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H9m-2 0h2"/>
                 </svg>
                 <span id="ctaText">Share Tool</span>
             </button>
             <div id="shareButtonHelp" class="sr-only">Share this DNS testing tool with others</div>
+        </div>
+
+        <!-- Technical Information -->
+        <div class="mt-16 glass-card p-6 md:p-8 rounded-2xl max-w-6xl mx-auto fade-in" role="region" aria-labelledby="disclaimerTitle">
+            <h2 id="disclaimerTitle" class="text-2xl font-bold text-cyan-300 mb-6 text-center">Technical Information</h2>
+            <div class="grid md:grid-cols-2 gap-8 text-gray-200 leading-relaxed text-sm md:text-base">
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-3 h-3 bg-blue-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-2">Browser-Based Testing</h4>
+                            <p>All tests run entirely in your browser using DNS-over-HTTPS (DoH) queries. No server-side processing, ensuring privacy and real-world results.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-3 h-3 bg-purple-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-2">Performance Metrics</h4>
+                            <p>Measures full DoH round-trip times including HTTP/TLS overhead. Use results for relative comparison between DNS servers.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-3 h-3 bg-green-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-2">Timeout Protection</h4>
+                            <p>Each query times out after 5 seconds to ensure responsive testing. Servers showing "Unavailable" are either slow or unreachable.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-3 h-3 bg-cyan-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-2">Network Conditions</h4>
+                            <p>Results vary based on your current network, bandwidth, and geographic location. Run multiple tests for accurate comparison.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-3 h-3 bg-yellow-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-2">Connection Caching</h4>
+                            <p>Implements intelligent caching to reuse warm connections and provide more accurate results for subsequent queries.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-3 h-3 bg-pink-400 rounded-full mt-2 flex-shrink-0 animate-pulse"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-2">No Data Collection</h4>
+                            <p>Zero personal data collection. All testing happens locally in your browser without sending information to external servers.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer / GitHub Section -->
+        <div class="mt-12 text-center glass-card p-6 rounded-2xl max-w-4xl mx-auto fade-in">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-6">
+                <a href="https://github.com/Argh94" target="_blank" rel="noopener noreferrer" 
+                   class="flex items-center gap-3 text-cyan-300 hover:text-cyan-100 transition group"
+                   aria-label="Follow @Argh94 on GitHub">
+                    <div class="p-3 bg-gray-800 rounded-xl group-hover:bg-gray-700 transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-medium">@Argh94</div>
+                        <div class="text-sm text-gray-400">Follow on GitHub</div>
+                    </div>
+                </a>
+                <a href="https://github.com/Argh94/DoHSpeedTest" target="_blank" rel="noopener noreferrer" 
+                   class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg hover:scale-105 transition flex items-center gap-2"
+                   aria-label="Star this project on GitHub">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <span>Star Project</span>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -1169,21 +1220,21 @@
     <div id="websiteModal" class="modal-overlay hidden" role="dialog" aria-labelledby="websiteModalTitle" aria-modal="true">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6">
-                <h3 id="websiteModalTitle" class="text-xl font-bold text-white">Manage Test Websites</h3>
-                <button class="close text-gray-400 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition" 
+                <h3 id="websiteModalTitle" class="text-2xl font-bold text-white">Manage Test Websites</h3>
+                <button class="close text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition" 
                         aria-label="Close dialog">&times;</button>
             </div>
             
             <div class="mb-6">
                 <label for="newWebsite" class="block text-sm font-medium text-gray-300 mb-2">Add New Website</label>
-                <div class="flex gap-2">
+                <div class="flex gap-3">
                     <input type="text" 
                            id="newWebsite" 
                            placeholder="e.g. valorant.riotgames.com" 
-                           class="glass-input text-sm"
+                           class="glass-input"
                            aria-label="Enter website hostname">
                     <button id="addHostname" 
-                            class="glass-button px-4 py-2 rounded-lg whitespace-nowrap text-sm">
+                            class="glass-button px-8 py-3 rounded-xl whitespace-nowrap">
                         Add
                     </button>
                 </div>
@@ -1202,12 +1253,12 @@
     <div id="dohModal" class="modal-overlay hidden" role="dialog" aria-labelledby="dohModalTitle" aria-modal="true">
         <div class="modal-content">
             <div class="flex justify-between items-center mb-6">
-                <h3 id="dohModalTitle" class="text-xl font-bold text-white">Suggest DNS Server</h3>
-                <button class="close text-gray-400 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition"
+                <h3 id="dohModalTitle" class="text-2xl font-bold text-white">Suggest DNS Server</h3>
+                <button class="close text-gray-400 hover:text-white text-2xl w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white/10 transition"
                         aria-label="Close dialog">&times;</button>
             </div>
             
-            <p class="text-sm text-gray-300 mb-4">Submit your DNS server suggestion to be added to our testing list.</p>
+            <p class="text-sm text-gray-300 mb-6">Submit your DNS server suggestion to be added to our testing list.</p>
             
             <div class="space-y-4">
                 <div>
@@ -1215,7 +1266,7 @@
                     <input type="text" 
                            id="newDoHName" 
                            placeholder="e.g. Shecan, Custom DNS" 
-                           class="glass-input text-sm"
+                           class="glass-input"
                            aria-label="Enter DNS server name">
                 </div>
                 
@@ -1224,7 +1275,7 @@
                     <input type="text" 
                            id="newDoHUrl" 
                            placeholder="e.g. https://free.shecan.ir/dns-query" 
-                           class="glass-input text-sm"
+                           class="glass-input"
                            aria-label="Enter DoH URL">
                 </div>
                 
@@ -1233,13 +1284,13 @@
                     <input type="text" 
                            id="newDoHIPs" 
                            placeholder="e.g. 1.1.1.1, 1.0.0.1" 
-                           class="glass-input text-sm"
+                           class="glass-input"
                            aria-label="Enter IP addresses, comma separated">
                 </div>
             </div>
             
             <button id="suggestDoHServer" 
-                    class="w-full mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition text-sm">
+                    class="w-full mt-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition">
                 Submit to GitHub Issues
             </button>
         </div>
@@ -1250,7 +1301,7 @@
     
     <!-- Enhanced Orbital Particles System -->
     <script>
-        // Simplified and optimized particle system
+        // Advanced Orbital Particle System with Multiple Layers
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -1260,6 +1311,7 @@
         let mousePos = { x: 0, y: 0 };
 
         function resizeCanvas() {
+            const rect = canvas.getBoundingClientRect();
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
         }
@@ -1273,18 +1325,41 @@
         });
 
         class Particle {
-            constructor() {
+            constructor(layer = 1) {
+                this.layer = layer;
+                this.reset();
+                
+                // Different properties for different layers
+                if (layer === 1) {
+                    // Main layer
+                    this.vx = (Math.random() - 0.5) * 1.5;
+                    this.vy = (Math.random() - 0.5) * 1.5;
+                    this.radius = Math.random() * 2.5 + 1;
+                    this.baseRadius = this.radius;
+                    this.maxLife = Math.random() * 200 + 150;
+                } else if (layer === 2) {
+                    // Secondary layer
+                    this.vx = (Math.random() - 0.5) * 0.8;
+                    this.vy = (Math.random() - 0.5) * 0.8;
+                    this.radius = Math.random() * 1.5 + 0.5;
+                    this.baseRadius = this.radius;
+                    this.maxLife = Math.random() * 300 + 200;
+                } else {
+                    // Background layer
+                    this.vx = (Math.random() - 0.5) * 0.3;
+                    this.vy = (Math.random() - 0.5) * 0.3;
+                    this.radius = Math.random() * 1 + 0.2;
+                    this.baseRadius = this.radius;
+                    this.maxLife = Math.random() * 500 + 300;
+                }
+            }
+
+            reset() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                const speed = Math.random() * 1.2 + 0.3;
-                const angle = Math.random() * Math.PI * 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.radius = Math.random() * 2 + 0.5;
-                this.hue = Math.random() * 60 + 180; // Blue to cyan range
                 this.life = 0;
-                this.maxLife = Math.random() * 200 + 100;
                 this.pulsePhase = Math.random() * Math.PI * 2;
+                this.hue = Math.random() * 60 + 180; // Blue to cyan range
             }
 
             update() {
@@ -1302,7 +1377,7 @@
                 this.x += this.vx;
                 this.y += this.vy;
                 this.life++;
-                this.pulsePhase += 0.1;
+                this.pulsePhase += 0.1 * this.layer;
 
                 // Boundary handling with wrap-around
                 if (this.x < -this.radius) this.x = canvas.width + this.radius;
@@ -1312,9 +1387,7 @@
 
                 // Regenerate if life exceeds max
                 if (this.life >= this.maxLife) {
-                    this.x = Math.random() * canvas.width;
-                    this.y = Math.random() * canvas.height;
-                    this.life = 0;
+                    this.reset();
                 }
 
                 // Apply friction
@@ -1330,17 +1403,29 @@
                 ctx.beginPath();
                 ctx.arc(this.x, this.y, currentRadius, 0, Math.PI * 2);
                 
-                // Enhanced gradient
+                // Enhanced gradient with layer-specific colors
+                const hue = this.hue;
+                const centerColor = `hsla(${hue}, 100%, 80%, ${0.8 + this.layer * 0.1})`;
+                const midColor = `hsla(${hue}, 100%, 60%, 0.4)`;
+                const edgeColor = `hsla(${hue}, 100%, 40%, 0)`;
+                
                 const gradient = ctx.createRadialGradient(
                     this.x, this.y, 0,
-                    this.x, this.y, currentRadius * 4
+                    this.x, this.y, currentRadius * 4 * this.layer
                 );
-                gradient.addColorStop(0, `hsla(${this.hue}, 100%, 80%, 0.8)`);
-                gradient.addColorStop(0.5, `hsla(${this.hue}, 100%, 60%, 0.4)`);
-                gradient.addColorStop(1, `hsla(${this.hue}, 100%, 40%, 0)`);
+                gradient.addColorStop(0, centerColor);
+                gradient.addColorStop(0.3, midColor);
+                gradient.addColorStop(1, edgeColor);
                 
                 ctx.fillStyle = gradient;
                 ctx.fill();
+                
+                // Core particle
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, currentRadius * 0.5, 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${hue}, 100%, 90%, 0.9)`;
+                ctx.fill();
+                
                 ctx.restore();
             }
         }
@@ -1349,10 +1434,22 @@
             if (isReducedMotion) return;
             
             particles = [];
-            const particleCount = Math.min(80, Math.floor(canvas.width * canvas.height / 12000));
             
-            for (let i = 0; i < particleCount; i++) {
-                particles.push(new Particle());
+            // Create different layers
+            const mainLayerCount = Math.min(60, Math.floor(canvas.width * canvas.height / 15000));
+            const secondaryLayerCount = Math.min(40, Math.floor(canvas.width * canvas.height / 20000));
+            const backgroundLayerCount = Math.min(30, Math.floor(canvas.width * canvas.height / 25000));
+            
+            for (let i = 0; i < mainLayerCount; i++) {
+                particles.push(new Particle(1));
+            }
+            
+            for (let i = 0; i < secondaryLayerCount; i++) {
+                particles.push(new Particle(2));
+            }
+            
+            for (let i = 0; i < backgroundLayerCount; i++) {
+                particles.push(new Particle(3));
             }
         }
 
@@ -1360,7 +1457,7 @@
             const dx = p1.x - p2.x;
             const dy = p1.y - p2.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            return distance < 80;
+            return distance < (80 * p1.layer + 40 * p2.layer) / 2;
         }
 
         function drawConnections() {
@@ -1380,20 +1477,37 @@
                             Math.pow(p1.y - p2.y, 2)
                         );
                         
-                        const opacity = Math.max(0, 1 - (distance / 80)) * 0.3;
+                        const maxDistance = (80 * p1.layer + 40 * p2.layer) / 2;
+                        const opacity = Math.max(0, 1 - (distance / maxDistance)) * 0.3;
                         
                         ctx.beginPath();
                         ctx.moveTo(p1.x, p1.y);
                         ctx.lineTo(p2.x, p2.y);
                         
+                        // Enhanced gradient for connections
                         const gradient = ctx.createLinearGradient(
                             p1.x, p1.y, p2.x, p2.y
                         );
-                        gradient.addColorStop(0, `hsla(${p1.hue}, 100%, 60%, ${opacity})`);
-                        gradient.addColorStop(1, `hsla(${p2.hue}, 100%, 60%, ${opacity})`);
+                        const hue1 = p1.hue;
+                        const hue2 = p2.hue;
+                        
+                        gradient.addColorStop(0, `hsla(${hue1}, 100%, 60%, ${opacity})`);
+                        gradient.addColorStop(1, `hsla(${hue2}, 100%, 60%, ${opacity})`);
                         
                         ctx.strokeStyle = gradient;
                         ctx.stroke();
+
+                        // Connection glow effect
+                        const midX = (p1.x + p2.x) / 2;
+                        const midY = (p1.y + p2.y) / 2;
+                        
+                        ctx.beginPath();
+                        const glowRadius = 30 * Math.min(p1.layer, p2.layer);
+                        const glowGradient = ctx.createRadialGradient(midX, midY, 0, midX, midY, glowRadius);
+                        glowGradient.addColorStop(0, `rgba(255, 255, 255, ${opacity * 0.4})`);
+                        glowGradient.addColorStop(1, 'transparent');
+                        ctx.fillStyle = glowGradient;
+                        ctx.fill();
                     }
                 }
             }
@@ -1404,7 +1518,7 @@
         function animate() {
             if (!isVisible || isReducedMotion) return;
             
-            ctx.fillStyle = 'rgba(15, 12, 41, 0.08)';
+            ctx.fillStyle = 'rgba(15, 12, 41, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             particles.forEach(particle => {
