@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,52 +22,97 @@
     <meta name="twitter:description" content="Find the fastest DNS server for your location">
     
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#1a1a2e">
+    <meta name="theme-color" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="DoHSpeedTest">
+    
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
     
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' cdn.jsdelivr.net;">
     
     <!-- Performance Optimization -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="//cdn.jsdelivr.net">
     
-    <!-- CSS with Integrity -->
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" 
-          rel="stylesheet" 
-          integrity="sha384-bVSI6Z11TJ2G7QKVKP4QWgI8S3N9Z4WQhG7F34DRJc5QJtM5kOZ3nxV5YV5GY7gQ"
-          crossorigin="anonymous">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00d4ff',
+                        'neon-cyan': '#00ffff',
+                        'electric-purple': '#8b5cf6',
+                        'matrix-green': '#00ff41'
+                    },
+                    fontFamily: {
+                        'mono': ['Fira Code', 'Monaco', 'Consolas', 'monospace']
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                    },
+                    keyframes: {
+                        glow: {
+                            'from': { 'box-shadow': '0 0 5px #00d4ff, 0 0 10px #00d4ff, 0 0 15px #00d4ff' },
+                            'to': { 'box-shadow': '0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     
     <!-- Chart.js with Integrity -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.js" 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js" 
             integrity="sha384-OjeFEGkKhmq2S6Z8Z9QKj4M6m7NlL7VbG1pAMv7xU8NqZbS8l1E9jZCz8l1C9W7V"
             crossorigin="anonymous" defer></script>
     
+    <!-- Custom CSS -->
     <style>
-        /* Animated Electronic Wave Background */
-        body {
-            background: linear-gradient(-45deg, #0f0f1e, #1a1a2e, #16213e, #0f3460);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
+        /* ============================================
+           GLOBAL STYLES & RESET
+        ============================================ */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f0f1e 75%, #000000 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
         }
 
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            25% { background-position: 100% 0%; }
+            50% { background-position: 100% 100%; }
+            75% { background-position: 0% 100%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* Electric Particles Canvas */
+        /* ============================================
+           ANIMATED PARTICLES BACKGROUND
+        ============================================ */
         #particles-canvas {
             position: fixed;
             top: 0;
@@ -76,9 +121,12 @@
             height: 100%;
             z-index: 1;
             pointer-events: none;
+            opacity: 0.6;
         }
 
-        /* Electronic Waves */
+        /* ============================================
+           WAVE ANIMATIONS
+        ============================================ */
         .wave {
             position: absolute;
             bottom: 0;
@@ -87,9 +135,16 @@
             height: 200px;
             background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><path d="M0,100 Q300,50 600,100 T1200,100 L1200,200 L0,200 Z" fill="%231e40af" opacity="0.3"/><path d="M0,120 Q300,70 600,120 T1200,120 L1200,200 L0,200 Z" fill="%233b82f6" opacity="0.2"/></svg>') repeat-x;
             background-size: 2400px 200px;
-            animation: waveMove 20s linear infinite;
+            animation: waveMove 25s linear infinite;
             pointer-events: none;
-            z-index: 0;
+            z-index: 2;
+        }
+
+        .wave:nth-child(2) {
+            height: 150px;
+            animation-delay: -5s;
+            animation-duration: 30s;
+            opacity: 0.5;
         }
 
         @keyframes waveMove {
@@ -97,50 +152,119 @@
             100% { background-position: -2400px 0; }
         }
 
-        /* Glassmorphism Cards */
+        /* ============================================
+           GLASS MORPHISM COMPONENTS
+        ============================================ */
         .glass-card {
             background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
             position: relative;
             z-index: 10;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 40px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.18);
         }
 
         .glass-header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            position: relative;
+            overflow: hidden;
         }
 
+        .glass-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* ============================================
+           BUTTON STYLES
+        ============================================ */
         .glass-button {
-            background: rgba(59, 130, 246, 0.2);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(59, 130, 246, 0.15);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
+            color: #ffffff;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .glass-button:hover::before {
+            left: 100%;
         }
 
         .glass-button:hover {
-            background: rgba(59, 130, 246, 0.35);
+            background: rgba(59, 130, 246, 0.25);
+            border-color: rgba(59, 130, 246, 0.5);
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .glass-button:active {
+            transform: translateY(0);
+            transition: all 0.1s;
         }
 
         .glass-button:disabled {
-            background: rgba(107, 114, 128, 0.3);
-            border-color: rgba(107, 114, 128, 0.4);
+            background: rgba(107, 114, 128, 0.2);
+            border-color: rgba(107, 114, 128, 0.3);
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
 
+        .glass-button:disabled:hover {
+            transform: none;
+            background: rgba(107, 114, 128, 0.2);
+            box-shadow: none;
+        }
+
+        /* ============================================
+           LOADING ANIMATIONS
+        ============================================ */
         .spinner {
             display: inline-block;
-            width: 40px;
-            height: 40px;
+            width: 50px;
+            height: 50px;
             border: 3px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: #3b82f6;
@@ -151,42 +275,337 @@
             to { transform: rotate(360deg); }
         }
 
-        .hidden { display: none; }
-        .chart-container { height: 400px; }
-        @media (max-width: 768px) { .chart-container { height: 500px; } }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 15px;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
 
-        /* Copy Button in Table - Neon Blue */
-        .copy-btn {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #60a5fa;
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8, #1e40af);
+            border-radius: 3px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: progress-shimmer 2s infinite;
+        }
+
+        @keyframes progress-shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* ============================================
+           TABLE STYLES
+        ============================================ */
+        .results-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .results-table th {
+            background: linear-gradient(135deg, #1e40af, #3730a3);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 16px 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .results-table th:hover {
+            background: linear-gradient(135deg, #2563eb, #4f46e5);
+            cursor: pointer;
+        }
+
+        .results-table th:first-child {
+            text-align: left;
+            padding-left: 20px;
+        }
+
+        .results-table th:not(:first-child) {
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .results-table th[aria-sort="ascending"]::after {
+            content: " ▲";
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .results-table th[aria-sort="descending"]::after {
+            content: " ▼";
+            font-size: 0.8em;
+            opacity: 0.8;
+        }
+
+        .results-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .results-table td:first-child {
+            padding-left: 20px;
+            font-weight: 500;
+        }
+
+        .results-table td:not(:first-child) {
+            text-align: center;
+            font-family: 'Fira Code', monospace;
+            font-weight: 500;
+        }
+
+        .results-table tbody tr {
             transition: all 0.2s ease;
         }
-        .copy-btn:hover {
-            background: rgba(59, 130, 246, 0.4);
-            color: white;
+
+        .results-table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.08);
             transform: translateY(-1px);
         }
+
+        .results-table tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* ============================================
+           COPY BUTTON STYLES
+        ============================================ */
+        .copy-btn {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #60a5fa;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            margin-left: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .copy-btn:hover {
+            background: rgba(59, 130, 246, 0.25);
+            color: #ffffff;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
         .copy-btn.copied {
-            background: rgba(34, 197, 94, 0.3);
+            background: rgba(34, 197, 94, 0.25);
             border-color: rgba(34, 197, 94, 0.5);
             color: #86efac;
         }
 
-        /* Notification Styles */
+        /* ============================================
+           NOTIFICATION STYLES
+        ============================================ */
         .notification {
             position: fixed;
             top: 20px;
             right: 20px;
             z-index: 1000;
             transform: translateX(400px);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            box-shadow: 
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                0 4px 12px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
+
         .notification.show {
             transform: translateX(0);
         }
 
-        /* Accessibility Improvements */
+        .notification-error {
+            background: rgba(239, 68, 68, 0.9);
+            border-color: rgba(248, 113, 113, 0.5);
+        }
+
+        .notification-success {
+            background: rgba(34, 197, 94, 0.9);
+            border-color: rgba(134, 239, 172, 0.5);
+        }
+
+        .notification-info {
+            background: rgba(59, 130, 246, 0.9);
+            border-color: rgba(147, 197, 253, 0.5);
+        }
+
+        .notification-warning {
+            background: rgba(245, 158, 11, 0.9);
+            border-color: rgba(252, 211, 77, 0.5);
+        }
+
+        /* ============================================
+           MODAL STYLES
+        ============================================ */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .modal-overlay.show .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        /* ============================================
+           INPUT STYLES
+        ============================================ */
+        .glass-input {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #ffffff;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .glass-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .glass-input:focus {
+            outline: none;
+            border-color: rgba(59, 130, 246, 0.5);
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+        ============================================ */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .glass-card {
+                border-radius: 16px;
+                padding: 1.5rem;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+
+            .results-table th:first-child,
+            .results-table td:first-child {
+                padding-left: 12px;
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+                transform: translateY(-100px);
+            }
+
+            .notification.show {
+                transform: translateY(0);
+            }
+
+            .modal-content {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+
+            .glass-button {
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .results-table {
+                font-size: 12px;
+            }
+
+            .results-table th,
+            .results-table td {
+                padding: 8px 4px;
+            }
+
+            .results-table th:first-child,
+            .results-table td:first-child {
+                padding-left: 8px;
+            }
+
+            .spinner {
+                width: 40px;
+                height: 40px;
+            }
+        }
+
+        /* ============================================
+           ACCESSIBILITY IMPROVEMENTS
+        ============================================ */
         .sr-only {
             position: absolute;
             width: 1px;
@@ -199,286 +618,523 @@
             border: 0;
         }
 
-        /* Focus states for better accessibility */
+        /* Focus states */
         .glass-button:focus,
-        button:focus,
-        input:focus {
+        input:focus,
+        button:focus {
             outline: 2px solid #3b82f6;
             outline-offset: 2px;
         }
 
         /* Reduced motion support */
         @media (prefers-reduced-motion: reduce) {
-            .wave { animation: none; }
-            body { animation: none; }
-            .spinner { animation: none; }
-            .glass-button:hover {
-                transform: none;
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
             }
         }
 
-        /* Loading progress bar */
-        .progress-bar {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin-top: 10px;
+        /* ============================================
+           UTILITY CLASSES
+        ============================================ */
+        .hidden { display: none !important; }
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        .slide-up { animation: slideUp 0.5s ease-out; }
+        .bounce-in { animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
-            border-radius: 2px;
-            transition: width 0.3s ease;
-            width: 0%;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            from {
+                opacity: 0;
+                transform: scale(0.3) translateY(30px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05) translateY(0);
+            }
+            70% {
+                transform: scale(0.95) translateY(0);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* ============================================
+           CHART STYLES
+        ============================================ */
+        .chart-container {
+            position: relative;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                padding: 15px;
+            }
+        }
+
+        /* ============================================
+           BEST DNS CONTAINER
+        ============================================ */
+        .best-dns-card {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .best-dns-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+        }
+
+        .best-dns-card h3 {
+            color: #86efac;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .best-dns-card .dns-name {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.75rem;
+        }
+
+        .best-dns-card .dns-ips {
+            font-family: 'Fira Code', monospace;
+            color: #d1d5db;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            word-break: break-all;
+        }
+
+        .copy-ips-btn {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-ips-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .copy-ips-btn:disabled {
+            background: linear-gradient(135deg, #6b7280, #4b5563);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
     </style>
 </head>
-<body class="text-white">
-    <!-- Electric Particles -->
+<body class="text-white min-h-screen">
+    <!-- Electric Particles Canvas -->
     <canvas id="particles-canvas"></canvas>
 
     <!-- Animated Waves -->
     <div class="wave"></div>
+    <div class="wave"></div>
 
     <!-- Notification Container -->
-    <div id="notification-container"></div>
+    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <!-- Progressive Enhancement - No Script Notice -->
     <noscript>
-        <div class="bg-yellow-900/20 border border-yellow-500 rounded-lg p-6 text-center m-4 max-w-2xl mx-auto">
+        <div class="fixed top-4 left-4 right-4 z-50 glass-card p-6 text-center max-w-2xl mx-auto">
             <h2 class="text-yellow-400 text-xl font-bold mb-2">JavaScript Required</h2>
             <p class="text-yellow-300">This tool requires JavaScript to function properly. Please enable JavaScript in your browser.</p>
         </div>
     </noscript>
 
-    <div class="container mx-auto px-4 py-8 max-w-6xl relative z-10">
-        <!-- Glass Header -->
-        <header class="glass-header text-center mb-10 p-6 rounded-2xl">
-            <h1 class="text-5xl font-extrabold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">
-                DoHSpeedTest
-            </h1>
-            <p class="text-lg opacity-90">Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
-            <p class="text-sm text-gray-400 mt-2">Real-time DNS speed testing with 50+ global servers</p>
+    <div class="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+        <!-- Hero Section -->
+        <header class="glass-header text-center mb-10 p-8 rounded-2xl bounce-in">
+            <div class="relative">
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-300">
+                    DoHSpeedTest
+                </h1>
+                <div class="absolute inset-0 bg-gradient-to-r from-blue-400 to-cyan-300 opacity-20 blur-3xl -z-10"></div>
+            </div>
+            <p class="text-lg md:text-xl text-gray-200 mb-2">Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
+            <p class="text-sm text-gray-400 flex items-center justify-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"/>
+                </svg>
+                Real-time DNS speed testing with 50+ global servers
+            </p>
         </header>
 
-        <!-- Main Glass Card -->
-        <div class="glass-card p-6 md:p-8 mb-8">
-            <div class="flex flex-col md:flex-row gap-4 mb-6">
-                <button id="checkButton" 
-                        class="flex-1 glass-button text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2"
-                        aria-describedby="checkButtonHelp"
-                        aria-expanded="false">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                    <span>Start DNS Test</span>
-                </button>
-                <div id="checkButtonHelp" class="sr-only">Begins DNS speed testing process. May take 30-60 seconds.</div>
+        <!-- Main Control Panel -->
+        <div class="glass-card p-6 md:p-8 mb-8 slide-up">
+            <!-- Control Buttons -->
+            <div class="flex flex-col lg:flex-row gap-4 mb-8">
+                <!-- Primary Test Button -->
+                <div class="flex-1">
+                    <button id="checkButton" 
+                            class="w-full glass-button text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-3 text-lg"
+                            aria-describedby="checkButtonHelp"
+                            aria-expanded="false">
+                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                        <span id="checkButtonText">Start DNS Test</span>
+                        <span id="checkButtonSpinner" class="hidden">
+                            <svg class="w-7 h-7 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </span>
+                    </button>
+                    <div id="checkButtonHelp" class="sr-only">Begins DNS speed testing process. May take 30-60 seconds.</div>
+                </div>
                 
-                <button id="editButton" 
-                        class="glass-button text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2"
-                        aria-describedby="editButtonHelp">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                    </svg>
-                    <span>Edit Hosts</span>
-                </button>
-                <div id="editButtonHelp" class="sr-only">Manage the list of websites used for DNS testing</div>
-                
-                <button id="editDoHButton" 
-                        class="glass-button text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2"
-                        aria-describedby="dohButtonHelp">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-                    </svg>
-                    <span>Suggest DNS</span>
-                </button>
-                <div id="dohButtonHelp" class="sr-only">Suggest a new DNS server to be added to the testing list</div>
+                <!-- Secondary Action Buttons -->
+                <div class="flex gap-3 lg:gap-4">
+                    <button id="editButton" 
+                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 lg:w-auto w-full"
+                            aria-describedby="editButtonHelp">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                        </svg>
+                        <span class="hidden lg:inline">Edit Hosts</span>
+                        <span class="lg:hidden">Hosts</span>
+                    </button>
+                    <div id="editButtonHelp" class="sr-only">Manage the list of websites used for DNS testing</div>
+                    
+                    <button id="editDoHButton" 
+                            class="glass-button text-white font-semibold py-4 px-6 rounded-xl flex items-center justify-center gap-2 lg:w-auto w-full"
+                            aria-describedby="dohButtonHelp">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        <span class="hidden lg:inline">Suggest DNS</span>
+                        <span class="lg:hidden">Suggest</span>
+                    </button>
+                    <div id="dohButtonHelp" class="sr-only">Suggest a new DNS server to be added to the testing list</div>
+                </div>
             </div>
 
-            <div id="loadingMessage" class="hidden text-center py-8" role="status" aria-live="polite" aria-busy="true">
-                <p class="text-lg font-medium mb-4" id="loadingText"></p>
-                <div class="spinner mx-auto mb-4" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Test progress"></div>
+            <!-- Loading State -->
+            <div id="loadingMessage" class="hidden text-center py-12" role="status" aria-live="polite" aria-busy="true">
+                <div class="mb-6">
+                    <div class="spinner mx-auto mb-4" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Test progress"></div>
+                    <p class="text-lg font-medium" id="loadingText">Initializing test...</p>
+                </div>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressFill"></div>
                 </div>
             </div>
 
-            <!-- Results Table -->
-            <div id="dnsResults" class="mt-8 overflow-x-auto">
-                <table id="resultsTable" class="w-full table-auto border-collapse" role="table">
-                    <thead>
-                        <tr class="bg-gradient-to-r from-blue-600 to-purple-700 text-white" role="row">
-                            <th class="text-left py-3 px-4 cursor-pointer" 
-                                onclick="sortTable(0)" 
-                                scope="col"
-                                aria-sort="none"
-                                tabindex="0">
-                                DNS Server
-                            </th>
-                            <th class="text-center py-3 px-4 cursor-pointer" 
-                                onclick="sortTable(1)"
-                                scope="col"
-                                aria-sort="none"
-                                tabindex="0">
-                                Min (ms)
-                            </th>
-                            <th class="text-center py-3 px-4 cursor-pointer" 
-                                onclick="sortTable(2)"
-                                scope="col"
-                                aria-sort="none"
-                                tabindex="0">
-                                Median (ms)
-                            </th>
-                            <th class="text-center py-3 px-4 cursor-pointer" 
-                                onclick="sortTable(3)"
-                                scope="col"
-                                aria-sort="none"
-                                tabindex="0">
-                                Avg (ms)
-                            </th>
-                            <th class="text-center py-3 px-4 cursor-pointer" 
-                                onclick="sortTable(4)"
-                                scope="col"
-                                aria-sort="none"
-                                tabindex="0">
-                                Max (ms)
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-transparent" role="rowgroup"></tbody>
-                </table>
+            <!-- Results Table Section -->
+            <div id="dnsResults" class="mt-8 fade-in">
+                <div class="overflow-x-auto rounded-2xl border border-white/10">
+                    <table id="resultsTable" class="results-table" role="table" aria-describedby="tableDescription">
+                        <caption id="tableDescription" class="sr-only">DNS server performance comparison results</caption>
+                        <thead>
+                            <tr role="row">
+                                <th class="text-left py-4 px-6 cursor-pointer" 
+                                    onclick="sortTable(0)" 
+                                    scope="col"
+                                    aria-sort="none"
+                                    tabindex="0"
+                                    role="columnheader">
+                                    DNS Server
+                                    <span class="sr-only">(click to sort)</span>
+                                </th>
+                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                    onclick="sortTable(1)"
+                                    scope="col"
+                                    aria-sort="none"
+                                    tabindex="0"
+                                    role="columnheader">
+                                    Min (ms)
+                                    <span class="sr-only">(click to sort)</span>
+                                </th>
+                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                    onclick="sortTable(2)"
+                                    scope="col"
+                                    aria-sort="none"
+                                    tabindex="0"
+                                    role="columnheader">
+                                    Median (ms)
+                                    <span class="sr-only">(click to sort)</span>
+                                </th>
+                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                    onclick="sortTable(3)"
+                                    scope="col"
+                                    aria-sort="none"
+                                    tabindex="0"
+                                    role="columnheader">
+                                    Avg (ms)
+                                    <span class="sr-only">(click to sort)</span>
+                                </th>
+                                <th class="text-center py-4 px-4 cursor-pointer" 
+                                    onclick="sortTable(4)"
+                                    scope="col"
+                                    aria-sort="none"
+                                    tabindex="0"
+                                    role="columnheader">
+                                    Max (ms)
+                                    <span class="sr-only">(click to sort)</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-transparent" role="rowgroup">
+                            <!-- Results will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <!-- Best DNS Box -->
-            <div id="bestDNSContainer" class="mt-10"></div>
+            <!-- Best DNS Result -->
+            <div id="bestDNSContainer" class="mt-10 fade-in"></div>
 
-            <!-- Chart -->
-            <div id="chartContainer" class="hidden mt-12 glass-card p-6 rounded-2xl" role="region" aria-labelledby="chartTitle">
+            <!-- Chart Section -->
+            <div id="chartContainer" class="hidden mt-12 glass-card p-6 md:p-8 rounded-2xl bounce-in" role="region" aria-labelledby="chartTitle">
                 <h3 id="chartTitle" class="text-2xl font-bold text-center mb-6 text-cyan-300">DNS Speed Comparison</h3>
                 <div class="chart-container">
-                    <canvas id="dnsChart" role="img" aria-label="Bar chart showing DNS server response times"></canvas>
+                    <canvas id="dnsChart" role="img" aria-label="Bar chart showing DNS server response times in milliseconds"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- Share Button -->
-        <div class="text-center mt-10">
+        <!-- Action Buttons Section -->
+        <div class="text-center mt-12 fade-in">
             <button id="cta" 
-                    class="glass-button text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 mx-auto"
+                    class="glass-button text-white font-bold py-4 px-8 rounded-xl flex items-center gap-3 mx-auto text-lg"
                     aria-describedby="shareButtonHelp">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m.684 2.684c-.174.404-.393.86-.593 1.316M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H9m-2 0h2"/>
                 </svg>
-                <span>Share Tool</span>
+                <span id="ctaText">Share Tool</span>
             </button>
             <div id="shareButtonHelp" class="sr-only">Share this DNS testing tool with others</div>
         </div>
 
-        <!-- Disclaimer & Technical Notes -->
-        <div class="mt-16 glass-card p-6 md:p-8 rounded-2xl max-w-5xl mx-auto" role="region" aria-labelledby="disclaimerTitle">
-            <h2 id="disclaimerTitle" class="text-2xl font-bold text-cyan-300 mb-6 text-center">Disclaimer & Technical Notes</h2>
-            <div class="space-y-5 text-gray-200 leading-relaxed text-sm md:text-base">
-                <p><strong>This DNS Speed Test tool runs entirely in your browser</strong>, sending live DNS-over-HTTPS (DoH) queries from your local environment. No server-side code is involved, and <strong>no personal data is collected</strong>. By measuring directly from your current network, the tool aims to provide accurate, real-world results.</p>
-                <p><strong>Time Measurement & Browser Overhead:</strong> We use the browser's <code>fetch</code> and <code>performance.now()</code> APIs to measure full DoH round-trip times. Because this includes HTTP/TLS overhead, results may be higher than raw DNS queries performed by other tools. Depending on server capabilities, our script may use GET or POST, CORS or no-cors mode. Some endpoints require a preflight request, which can slightly affect timings.</p>
-                <p><strong>Timeouts & Unavailable Results:</strong> Each query times out after 5 seconds. If a server does not respond in that window, it appears as <em>Unavailable</em>. This ensures the test continues promptly even when certain DNS endpoints are slow or unreachable.</p>
-                <p><strong>Influence of Local Conditions:</strong> Network latency, bandwidth, and browser load can cause variability. We recommend running multiple tests at different times or under different network conditions to get a broader picture. The tool's output is best used as a <strong>relative comparison</strong> among DNS servers under your specific circumstances rather than an absolute global measure.</p>
-                <p>While we strive for accuracy by testing each DNS server with the same set of hostnames (and reusing warm connections), results are still <strong>indicative</strong>. Use them as a guide when deciding which DNS server offers the best performance for your location and environment.</p>
+        <!-- Technical Information -->
+        <div class="mt-16 glass-card p-6 md:p-8 rounded-2xl max-w-6xl mx-auto fade-in" role="region" aria-labelledby="disclaimerTitle">
+            <h2 id="disclaimerTitle" class="text-2xl font-bold text-cyan-300 mb-6 text-center">Technical Information</h2>
+            <div class="grid md:grid-cols-2 gap-8 text-gray-200 leading-relaxed text-sm md:text-base">
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">Browser-Based Testing</h4>
+                            <p>All tests run entirely in your browser using DNS-over-HTTPS (DoH) queries. No server-side processing, ensuring privacy and real-world results.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-purple-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">Performance Metrics</h4>
+                            <p>Measures full DoH round-trip times including HTTP/TLS overhead. Use results for relative comparison between DNS servers.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-green-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">Timeout Protection</h4>
+                            <p>Each query times out after 5 seconds to ensure responsive testing. Servers showing "Unavailable" are either slow or unreachable.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-cyan-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">Network Conditions</h4>
+                            <p>Results vary based on your current network, bandwidth, and geographic location. Run multiple tests for accurate comparison.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-yellow-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">Connection Caching</h4>
+                            <p>Implements intelligent caching to reuse warm connections and provide more accurate results for subsequent queries.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="w-2 h-2 bg-red-400 rounded-full mt-2 flex-shrink-0"></div>
+                        <div>
+                            <h4 class="font-semibold text-white mb-1">No Data Collection</h4>
+                            <p>Zero personal data collection. All testing happens locally in your browser without sending information to external servers.</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- GitHub Link + Star Button -->
-        <div class="mt-12 text-center glass-card p-6 rounded-2xl max-w-2xl mx-auto">
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <!-- Footer / GitHub Section -->
+        <div class="mt-12 text-center glass-card p-6 rounded-2xl max-w-4xl mx-auto fade-in">
+            <div class="flex flex-col lg:flex-row items-center justify-center gap-6">
                 <a href="https://github.com/Argh94" target="_blank" rel="noopener noreferrer" 
-                   class="flex items-center gap-3 text-cyan-300 hover:text-cyan-100 transition"
+                   class="flex items-center gap-3 text-cyan-300 hover:text-cyan-100 transition group"
                    aria-label="Follow @Argh94 on GitHub">
-                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" 
-                         alt="GitHub" class="w-10 h-10" loading="lazy">
-                    <span class="font-medium">Follow @Argh94 on GitHub</span>
+                    <div class="p-2 bg-gray-800 rounded-lg group-hover:bg-gray-700 transition">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </div>
+                    <div class="text-left">
+                        <div class="font-medium">@Argh94</div>
+                        <div class="text-sm text-gray-400">Follow on GitHub</div>
+                    </div>
                 </a>
                 <a href="https://github.com/Argh94/DoHSpeedTest" target="_blank" rel="noopener noreferrer" 
-                   class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2 px-6 rounded-full hover:shadow-lg hover:scale-105 transition flex items-center gap-2"
+                   class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-3 px-6 rounded-full hover:shadow-lg hover:scale-105 transition flex items-center gap-2"
                    aria-label="Star this project on GitHub">
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
-                    <span>Star on GitHub</span>
+                    <span>Star Project</span>
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Modals -->
-    <div id="websiteModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50" 
-         role="dialog" aria-labelledby="websiteModalTitle" aria-modal="true">
-        <div class="glass-card p-6 w-full max-w-md mx-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="websiteModalTitle" class="text-xl font-bold">Edit Hosts</h3>
-                <span class="close cursor-pointer text-gray-400 hover:text-white" 
-                      aria-label="Close dialog"
-                      tabindex="0">&times;</span>
+    <!-- ================================
+         MODAL DIALOGS
+    ================================= -->
+    
+    <!-- Website Management Modal -->
+    <div id="websiteModal" class="modal-overlay hidden" role="dialog" aria-labelledby="websiteModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="websiteModalTitle" class="text-2xl font-bold text-white">Manage Test Websites</h3>
+                <button class="close text-gray-400 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition" 
+                        aria-label="Close dialog">&times;</button>
             </div>
-            <input type="text" 
-                   id="newWebsite" 
-                   placeholder="e.g. valorant.riotgames.com" 
-                   class="w-full px-4 py-2 mb-3 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400"
-                   aria-label="Enter website hostname">
-            <button id="addHostname" 
-                    class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 mb-4">
-                Add Host
-            </button>
-            <ul id="websiteList" class="space-y-2" role="list"></ul>
+            
+            <div class="mb-6">
+                <label for="newWebsite" class="block text-sm font-medium text-gray-300 mb-2">Add New Website</label>
+                <div class="flex gap-3">
+                    <input type="text" 
+                           id="newWebsite" 
+                           placeholder="e.g. valorant.riotgames.com" 
+                           class="glass-input"
+                           aria-label="Enter website hostname">
+                    <button id="addHostname" 
+                            class="glass-button px-6 py-3 rounded-xl whitespace-nowrap">
+                        Add
+                    </button>
+                </div>
+            </div>
+            
+            <div>
+                <h4 class="text-lg font-semibold text-white mb-3">Current Test Websites</h4>
+                <ul id="websiteList" class="space-y-2 max-h-64 overflow-y-auto" role="list">
+                    <!-- Website list will be populated here -->
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div id="dohModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50"
-         role="dialog" aria-labelledby="dohModalTitle" aria-modal="true">
-        <div class="glass-card p-6 w-full max-w-md mx-4">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="dohModalTitle" class="text-xl font-bold">Suggest DNS Server</h3>
-                <span class="close cursor-pointer text-gray-400 hover:text-white"
-                      aria-label="Close dialog"
-                      tabindex="0">&times;</span>
+    <!-- DNS Suggestion Modal -->
+    <div id="dohModal" class="modal-overlay hidden" role="dialog" aria-labelledby="dohModalTitle" aria-modal="true">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="dohModalTitle" class="text-2xl font-bold text-white">Suggest DNS Server</h3>
+                <button class="close text-gray-400 hover:text-white text-2xl w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 transition"
+                        aria-label="Close dialog">&times;</button>
             </div>
-            <p class="text-sm text-gray-300 mb-4">Your suggestion will be sent to GitHub Issues for review.</p>
-            <input type="text" 
-                   id="newDoHName" 
-                   placeholder="Server Name (e.g. Shecan)" 
-                   class="w-full px-4 py-2 mb-3 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400"
-                   aria-label="Enter DNS server name">
-            <input type="text" 
-                   id="newDoHUrl" 
-                   placeholder="DoH URL (e.g. https://free.shecan.ir/dns-query)" 
-                   class="w-full px-4 py-2 mb-3 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400"
-                   aria-label="Enter DoH URL">
-            <input type="text" 
-                   id="newDoHIPs" 
-                   placeholder="IPs (comma-separated, optional)" 
-                   class="w-full px-4 py-2 mb-4 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400"
-                   aria-label="Enter IP addresses, comma separated">
+            
+            <p class="text-sm text-gray-300 mb-6">Submit your DNS server suggestion to be added to our testing list.</p>
+            
+            <div class="space-y-4">
+                <div>
+                    <label for="newDoHName" class="block text-sm font-medium text-gray-300 mb-2">Server Name</label>
+                    <input type="text" 
+                           id="newDoHName" 
+                           placeholder="e.g. Shecan, Custom DNS" 
+                           class="glass-input"
+                           aria-label="Enter DNS server name">
+                </div>
+                
+                <div>
+                    <label for="newDoHUrl" class="block text-sm font-medium text-gray-300 mb-2">DoH URL</label>
+                    <input type="text" 
+                           id="newDoHUrl" 
+                           placeholder="e.g. https://free.shecan.ir/dns-query" 
+                           class="glass-input"
+                           aria-label="Enter DoH URL">
+                </div>
+                
+                <div>
+                    <label for="newDoHIPs" class="block text-sm font-medium text-gray-300 mb-2">IP Addresses (Optional)</label>
+                    <input type="text" 
+                           id="newDoHIPs" 
+                           placeholder="e.g. 1.1.1.1, 1.0.0.1" 
+                           class="glass-input"
+                           aria-label="Enter IP addresses, comma separated">
+                </div>
+            </div>
+            
             <button id="suggestDoHServer" 
-                    class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg hover:shadow-lg transition">
+                    class="w-full mt-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white py-3 rounded-xl font-semibold hover:shadow-lg transition">
                 Submit to GitHub Issues
             </button>
         </div>
     </div>
 
-    <!-- Main Application Script -->
+    <!-- JavaScript -->
     <script src="script.js" defer></script>
-
-    <!-- Electric Particles Script -->
+    
+    <!-- Enhanced Particles Script with Better Performance -->
     <script>
-        // Electric Particles with Collision Glow - Optimized
+        // Optimized Particle System with Advanced Effects
         const canvas = document.getElementById('particles-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
         let animationFrameId = null;
         let isVisible = true;
+        let isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
         function resizeCanvas() {
             const rect = canvas.getBoundingClientRect();
@@ -492,40 +1148,77 @@
             constructor() {
                 this.x = Math.random() * canvas.width;
                 this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 1.5;
-                this.vy = (Math.random() - 0.5) * 1.5;
+                const speed = Math.random() * 1.5 + 0.5;
+                const angle = Math.random() * Math.PI * 2;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
                 this.radius = Math.random() * 2 + 1;
-                this.color = `hsl(${Math.random() * 60 + 180}, 100%, 70%)`;
+                this.color = this.getRandomColor();
                 this.life = 0;
-                this.maxLife = Math.random() * 100 + 100;
+                this.maxLife = Math.random() * 150 + 100;
+                this.pulsePhase = Math.random() * Math.PI * 2;
+            }
+
+            getRandomColor() {
+                const colors = [
+                    `hsl(200, 100%, 70%)`,
+                    `hsl(220, 100%, 75%)`,
+                    `hsl(240, 100%, 80%)`,
+                    `hsl(180, 100%, 70%)`,
+                    `hsl(160, 100%, 75%)`
+                ];
+                return colors[Math.floor(Math.random() * colors.length)];
             }
 
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
                 this.life++;
+                this.pulsePhase += 0.1;
 
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+                // Enhanced boundary handling with glow effect
+                if (this.x < -this.radius) this.x = canvas.width + this.radius;
+                if (this.x > canvas.width + this.radius) this.x = -this.radius;
+                if (this.y < -this.radius) this.y = canvas.height + this.radius;
+                if (this.y > canvas.height + this.radius) this.y = -this.radius;
 
-                this.x = Math.max(0, Math.min(canvas.width, this.x));
-                this.y = Math.max(0, Math.min(canvas.height, this.y));
+                // Regenerate particles if life exceeds max
+                if (this.life >= this.maxLife) {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.life = 0;
+                }
             }
 
             draw() {
+                const pulseScale = 1 + Math.sin(this.pulsePhase) * 0.3;
+                
+                ctx.save();
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
+                ctx.arc(this.x, this.y, this.radius * pulseScale, 0, Math.PI * 2);
+                
+                // Enhanced gradient for better glow effect
+                const gradient = ctx.createRadialGradient(
+                    this.x, this.y, 0,
+                    this.x, this.y, this.radius * 3 * pulseScale
+                );
+                gradient.addColorStop(0, this.color.replace('70%', '90%'));
+                gradient.addColorStop(0.5, this.color);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.fillStyle = gradient;
                 ctx.fill();
-                ctx.shadowBlur = 0;
+                ctx.restore();
             }
         }
 
-        function initParticles(count) {
+        function initParticles() {
+            if (isReducedMotion) return; // Skip for reduced motion preference
+            
             particles = [];
-            for (let i = 0; i < count; i++) {
+            const particleCount = Math.min(100, Math.floor(canvas.width * canvas.height / 8000));
+            
+            for (let i = 0; i < particleCount; i++) {
                 particles.push(new Particle());
             }
         }
@@ -534,60 +1227,78 @@
             const dx = p1.x - p2.x;
             const dy = p1.y - p2.y;
             const distance = Math.sqrt(dx * dx + dy * dy);
-            return distance < 60;
+            return distance < 80;
         }
 
         function drawConnections() {
+            if (isReducedMotion) return;
+            
+            ctx.save();
+            ctx.lineWidth = 1;
+            
             for (let i = 0; i < particles.length; i++) {
                 for (let j = i + 1; j < particles.length; j++) {
                     if (checkCollision(particles[i], particles[j])) {
+                        const distance = Math.sqrt(
+                            Math.pow(particles[i].x - particles[j].x, 2) + 
+                            Math.pow(particles[i].y - particles[j].y, 2)
+                        );
+                        
+                        const opacity = Math.max(0, 1 - (distance / 80));
+                        
                         ctx.beginPath();
                         ctx.moveTo(particles[i].x, particles[i].y);
                         ctx.lineTo(particles[j].x, particles[j].y);
-                        const gradient = ctx.createLinearGradient(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-                        gradient.addColorStop(0, particles[i].color);
-                        gradient.addColorStop(1, particles[j].color);
+                        
+                        // Enhanced gradient for connections
+                        const gradient = ctx.createLinearGradient(
+                            particles[i].x, particles[i].y,
+                            particles[j].x, particles[j].y
+                        );
+                        gradient.addColorStop(0, particles[i].color.replace('70%', '60%'));
+                        gradient.addColorStop(1, particles[j].color.replace('70%', '60%'));
+                        
                         ctx.strokeStyle = gradient;
-                        ctx.lineWidth = 1;
+                        ctx.globalAlpha = opacity * 0.6;
                         ctx.stroke();
 
-                        // Flash effect
-                        ctx.beginPath();
+                        // Connection glow effect
                         const midX = (particles[i].x + particles[j].x) / 2;
                         const midY = (particles[i].y + particles[j].y) / 2;
-                        const flashGradient = ctx.createRadialGradient(midX, midY, 0, midX, midY, 20);
-                        flashGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-                        flashGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                        ctx.fillStyle = flashGradient;
-                        ctx.arc(midX, midY, 20, 0, Math.PI * 2);
+                        
+                        ctx.beginPath();
+                        const glowGradient = ctx.createRadialGradient(midX, midY, 0, midX, midY, 30);
+                        glowGradient.addColorStop(0, `rgba(255, 255, 255, ${opacity * 0.4})`);
+                        glowGradient.addColorStop(1, 'transparent');
+                        ctx.fillStyle = glowGradient;
                         ctx.fill();
                     }
                 }
             }
+            
+            ctx.restore();
         }
 
         function animate() {
-            if (!isVisible) return;
+            if (!isVisible || isReducedMotion) return;
             
-            ctx.fillStyle = 'rgba(15, 15, 30, 0.1)';
+            ctx.fillStyle = 'rgba(12, 12, 12, 0.15)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
             });
 
             drawConnections();
 
-            particles = particles.filter(p => p.life < p.maxLife);
-            if (particles.length < 80) particles.push(new Particle());
-
             animationFrameId = requestAnimationFrame(animate);
         }
 
-        // Pause animation when tab is not visible
+        // Enhanced visibility management
         document.addEventListener('visibilitychange', function () {
             isVisible = !document.hidden;
+            
             if (isVisible && !animationFrameId) {
                 animate();
             } else if (!isVisible && animationFrameId) {
@@ -596,17 +1307,34 @@
             }
         });
 
-        // Initialize particles when page loads
+        // Improved initialization
         window.addEventListener('load', function() {
-            initParticles(80);
-            animate();
+            if (!isReducedMotion) {
+                initParticles();
+                animate();
+            } else {
+                // Simple static background for reduced motion
+                ctx.fillStyle = 'rgba(12, 12, 12, 0.3)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
         });
 
-        // Cleanup on page unload
+        // Enhanced cleanup
         window.addEventListener('beforeunload', function() {
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
             }
+        });
+
+        // Dynamic particle count adjustment based on screen size
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                if (!isReducedMotion) {
+                    initParticles();
+                }
+            }, 250);
         });
     </script>
 </body>
