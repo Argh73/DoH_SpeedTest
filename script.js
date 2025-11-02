@@ -1,6 +1,10 @@
+// === dns-packet is loaded globally from CDN ===
+// <script src="https://cdn.jsdelivr.net/npm/dns-packet@5.4.0/index.js"></script>
+
 const checkButton = document.getElementById('checkButton');
 const editButton = document.getElementById('editButton');
 const topWebsites = ['google.com', 'youtube.com', 'facebook.com', 'instagram.com', 'chatgpt.com', 'x.com', 'whatsapp.com', 'reddit.com', 'wikipedia.org', 'amazon.com', 'tiktok.com', 'pinterest.com'];
+
 
 const dnsServers = [
   { "name": "Shecan (شکن)", "url": "https://free.shecan.ir/dns-query", "ips": ["178.22.122.100", "185.51.200.2"] },
@@ -96,62 +100,53 @@ const dnsServers = [
 
 let dnsChart;
 let chartData = [];
+let resultFragment = null;
 
-// Helper function to normalize DoH URLs
+// === Normalize DoH URL ===
 function normalizeDoHUrl(base) {
-  if (!base) return null;
-  try {
-    const u = new URL(base);
-    if (!/^\/dns-query(\?|$)/.test(u.pathname)) {
-      u.pathname = '/dns-query';
-    }
-    return u.toString();
-  } catch {
-    return null;
-  }
+    if (!base) return null;
+    try {
+        const u = new URL(base);
+        if (!/^\/dns-query(\?|$)/.test(u.pathname)) u.pathname = '/dns-query';
+        return u.toString();
+    } catch { return null; }
 }
 
+// === Show Best DNS ===
 function showBestDNS() {
     const validServers = dnsServers.filter(s => s.speed && typeof s.speed.avg === 'number');
-    
+    const container = document.getElementById('bestDNSContainer');
+
     if (validServers.length === 0) {
-        // Show the server with the fewest failures
         const bestBySuccess = [...dnsServers].sort((a, b) => {
-            const aSuccess = a.individualResults.filter(r => typeof r.speed === 'number').length;
-            const bSuccess = b.individualResults.filter(r => typeof r.speed === 'number').length;
+            const aSuccess = a.individualResults?.filter(r => typeof r.speed === 'number').length || 0;
+            const bSuccess = b.individualResults?.filter(r => typeof r.speed === 'number').length || 0;
             return bSuccess - aSuccess;
         })[0];
 
-        document.getElementById('bestDNSContainer').innerHTML = `
-            <div class="mt-8 p-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg">
-                <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-3">No reliable DNS found!</h3>
-                <p class="font-mono text-lg mb-3"><strong>${bestBySuccess ? bestBySuccess.name : 'No server available'}</strong></p>
-                <p class="text-gray-700 dark:text-gray-300 mb-4 break-all">${bestBySuccess && bestBySuccess.ips ? bestBySuccess.ips.join(', ') : 'No IP available'}</p>
-                <button onclick="copyBestDNS('${bestBySuccess && bestBySuccess.ips ? bestBySuccess.ips.join(', ') : 'No IP available'}', this)" class="px-6 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition">
-                    Copy IPs
-                </button>
-                <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">All DNS servers failed to respond reliably. Try running the test again.</p>
-            </div>
-        `;
-        document.getElementById('bestDNSContainer').scrollIntoView({ behavior: 'smooth' });
-        return;
-    }
-    
-    validServers.sort((a, b) => a.speed.avg - b.speed.avg);
-    const best = validServers[0];
-    const ips = best.ips && best.ips.length > 0 ? best.ips.join(', ') : 'No IP available';
-    document.getElementById('bestDNSContainer').innerHTML = `
-        <div class="mt-8 p-6 bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg">
+        container.innerHTML = `<div class="mt-8 p-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg">
+            <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-3">No reliable DNS found!</h3>
+            <p class="font-mono text-lg mb-3"><strong>${bestBySuccess?.name || 'N/A'}</strong></p>
+            <p class="text-gray-700 dark:text-gray-300 mb-4 break-all">${bestBySuccess?.ips?.join(', ') || 'No IP'}</p>
+            <button class="px-6 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700" data-copy="${bestBySuccess?.ips?.join(', ') || ''}">Copy IPs</button>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Try again later.</p>
+        </div>`;
+    } else {
+        validServers.sort((a, b) => a.speed.avg - b.speed.avg);
+        const best = validServers[0];
+        const ips = best.ips?.length ? best.ips.join(', ') : 'No IP';
+        container.innerHTML = `<div class="mt-8 p-6 bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg">
             <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-3">Best DNS for you:</h3>
             <p class="font-mono text-lg mb-3"><strong>${best.name}</strong></p>
             <p class="font-mono text-gray-700 dark:text-gray-300 mb-4 break-all">${ips}</p>
-            <button onclick="copyBestDNS('${ips.replace(/'/g, "\\'")}', this)" class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                Copy IPs
-            </button>
-            <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Use these IPs in your network, router, or game settings.</p>
-        </div>
-    `;
-    document.getElementById('bestDNSContainer').scrollIntoView({ behavior: 'smooth' });
+            <button class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700" data-copy="${ips}">Copy IPs</button>
+            <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Use in router or game settings.</p>
+        </div>`;
+    }
+    container.scrollIntoView({ behavior: 'smooth' });
+    container.querySelectorAll('[data-copy]').forEach(btn => {
+        btn.addEventListener('click', () => copyBestDNS(btn.dataset.copy, btn));
+    });
 }
 
 function copyBestDNS(ips, btn) {
@@ -159,626 +154,323 @@ function copyBestDNS(ips, btn) {
         const old = btn.innerHTML;
         btn.innerHTML = 'Copied!';
         btn.classList.replace('bg-green-600', 'bg-green-800');
-        setTimeout(() => {
-            btn.innerHTML = old;
-            btn.classList.replace('bg-green-800', 'bg-green-600');
-        }, 2000);
-    }).catch(err => {
-        console.error('Failed to copy: ', err);
-        btn.innerHTML = 'Error!';
-        btn.classList.replace('bg-green-600', 'bg-red-600');
-        setTimeout(() => {
-            btn.innerHTML = old;
-            btn.classList.replace('bg-red-600', 'bg-green-600');
-        }, 2000);
+        setTimeout(() => { btn.innerHTML = old; btn.classList.replace('bg-green-800', 'bg-green-600'); }, 2000);
     });
 }
 
-function updateChartWithData(server) {
-    const existingIndex = chartData.findIndex(item => item.name === server.name);
-    const serverInfo = {
-        name: server.name,
-        avg: server.speed && typeof server.speed.avg === 'number' ? server.speed.avg : null,
-        min: server.speed && typeof server.speed.min === 'number' ? server.speed.min : null,
-        max: server.speed && typeof server.speed.max === 'number' ? server.speed.max : null
-    };
-
-    if (existingIndex === -1) {
-        chartData.push(serverInfo);
-    } else {
-        chartData[existingIndex] = serverInfo;
-    }
-
-    updateChart();
-}
-
+// === Update Chart (Once at End) ===
 function updateChart() {
-    const chartContainer = document.getElementById('chartContainer');
-    const canvas = document.getElementById('dnsChart');
-    const ctx = canvas.getContext('2d');
-    
-    const validData = chartData.filter(item => item.avg !== null).sort((a, b) => a.avg - b.avg);
-    
+    const validData = chartData.filter(d => d.avg !== null).sort((a, b) => a.avg - b.avg);
     if (validData.length === 0) return;
 
-    const minHeight = 300;
-    const maxHeight = 800;
-    const heightPerServer = 35;
-    const dynamicHeight = Math.max(minHeight, Math.min(maxHeight, validData.length * heightPerServer + 100));
-    
-    const container = chartContainer.querySelector('.chart-container');
-    container.style.height = `${dynamicHeight}px`;
+    const ctx = document.getElementById('dnsChart').getContext('2d');
+    const height = Math.max(300, Math.min(800, validData.length * 35 + 100));
+    document.querySelector('.chart-container').style.height = `${height}px`;
+    document.getElementById('chartContainer').classList.remove('hidden');
 
-    chartContainer.classList.remove('hidden');
-
-    if (dnsChart) {
-        dnsChart.destroy();
-    }
-
-    const minValue = Math.min(...validData.map(item => item.avg));
-    const maxValue = Math.max(...validData.map(item => item.avg));
-    const scaleMin = Math.max(0, minValue * 0.7);
+    if (dnsChart) dnsChart.destroy();
 
     dnsChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: validData.map(item => item.name),
+            labels: validData.map(d => d.name),
             datasets: [{
-                label: 'Average Response Time (ms)',
-                data: validData.map(item => item.avg),
-                backgroundColor: validData.map(item => getPerformanceColor(item.avg, validData)),
-                borderColor: validData.map(item => getPerformanceColor(item.avg, validData, true)),
-                borderWidth: 1
+                label: 'Avg (ms)',
+                data: validData.map(d => d.avg),
+                backgroundColor: validData.map(d => getPerformanceColor(d.avg, validData))
             }]
         },
         options: {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: false,
-            interaction: {
-                intersect: false,
-                mode: 'index'
-            },
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        label: function(context) {
-                            const server = validData[context.dataIndex];
-                            return [
-                                `Average: ${server.avg.toFixed(2)}ms`,
-                                `Min: ${server.min?.toFixed(2) || 'N/A'}ms`,
-                                `Max: ${server.max?.toFixed(2) || 'N/A'}ms`
-                            ];
-                        }
-                    }
-                }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                x: {
-                    min: scaleMin,
-                    title: {
-                        display: true,
-                        text: 'Response Time (ms)'
-                    },
-                    ticks: {
-                        callback: function(value) {
-                            return value.toFixed(0) + 'ms';
-                        }
-                    }
-                },
-                y: {
-                    title: {
-                        display: window.innerWidth >= 768,
-                        text: 'DNS Servers (Slowest to Fastest)'
-                    },
-                    ticks: {
-                        maxRotation: 0,
-                        font: {
-                            size: 11
-                        }
-                    },
-                    categoryPercentage: 0.8,
-                    barPercentage: 0.6
-                }
-            },
-            elements: {
-                bar: {
-                    borderWidth: 1
-                }
-            },
-            layout: {
-                padding: {
-                    left: 20,
-                    right: 20,
-                    top: 15,
-                    bottom: 15
-                }
+                x: { min: 0 },
+                y: { title: { display: window.innerWidth >= 768, text: 'DNS Servers' } }
             }
         }
     });
 }
 
-function getPerformanceColor(responseTime, allData, border = false) {
-    if (!allData || allData.length === 0) return border ? '#22c55e' : '#22c55e80';
-    
-    const validTimes = allData.map(d => d.avg).filter(t => t !== null);
-    const minTime = Math.min(...validTimes);
-    const maxTime = Math.max(...validTimes);
-    
-    if (minTime === maxTime) return border ? '#22c55e' : '#22c55e80';
-    
-    const normalized = (responseTime - minTime) / (maxTime - minTime);
-    
-    let r, g, b;
-    if (normalized <= 0.5) {
-        r = Math.round(255 * (normalized * 2));
-        g = 255;
-        b = 0;
-    } else {
-        r = 255;
-        g = Math.round(255 * (2 - normalized * 2));
-        b = 0;
-    }
-    
-    const alpha = border ? '' : '80';
-    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}${alpha}`;
+function getPerformanceColor(time, data) {
+    const times = data.map(d => d.avg);
+    const min = Math.min(...times), max = Math.max(...times);
+    if (min === max) return '#22c55e80';
+    const norm = (time - min) / (max - min);
+    let r = norm <= 0.5 ? Math.round(255 * norm * 2) : 255;
+    let g = norm <= 0.5 ? 255 : Math.round(255 * (2 - norm * 2));
+    return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}0080`;
 }
 
-checkButton.addEventListener('click', async function () {
-    this.disabled = true;
-    editButton.disabled = true;
-    document.getElementById('editDoHButton').disabled = true;
+// === Main Test Button ===
+checkButton.addEventListener('click', async () => {
+    [checkButton, editButton, document.getElementById('editDoHButton')].forEach(b => b.disabled = true);
     document.getElementById('loadingMessage').classList.remove('hidden');
-    document.getElementById('loadingText').textContent = 'Starting DNS tests...';
-    
+    document.getElementById('loadingText').textContent = 'Starting...';
+
     chartData = [];
+    resultFragment = document.createDocumentFragment();
     document.getElementById('chartContainer').classList.add('hidden');
+    document.querySelector('#resultsTable tbody').innerHTML = '';
 
     await performDNSTests();
 
+    document.querySelector('#resultsTable tbody').appendChild(resultFragment);
+    updateChart();
+    showBestDNS();
+
     document.getElementById('loadingMessage').classList.add('hidden');
-    this.disabled = false;
-    editButton.disabled = false;
-    document.getElementById('editDoHButton').disabled = false;
+    [checkButton, editButton, document.getElementById('editDoHButton')].forEach(b => b.disabled = false);
 });
 
+// === Perform Tests in Batches ===
 async function performDNSTests() {
-    // Process DNS servers in parallel but limit concurrent connections to avoid overwhelming the browser
-    const CONCURRENT_LIMIT = 5;
-    
-    for (let i = 0; i < dnsServers.length; i += CONCURRENT_LIMIT) {
-        const batch = dnsServers.slice(i, i + CONCURRENT_LIMIT);
-        await Promise.all(batch.map(async server => {
-            const dohUrl = normalizeDoHUrl(server.url);
-            if (!dohUrl) {
-                server.speed = {min: 'Unavailable', median: 'Unavailable', max: 'Unavailable', avg: 'Unavailable'};
-                server.individualResults = topWebsites.map(website => ({website, speed: 'Unavailable'}));
-                return;
-            }
-            
-            const speedResults = await Promise.allSettled(
-                topWebsites.map(website => measureDNSSpeed(dohUrl, website, server.type, server.allowCors))
-            );
-            
-            server.individualResults = topWebsites.map((website, index) => {
-                const result = speedResults[index];
-                const speed = result.status === 'fulfilled' && typeof result.value === 'number' 
-                    ? result.value 
-                    : 'Unavailable';
-                return {website, speed};
-            });
-            
-            const validResults = speedResults
-                .filter(r => r.status === 'fulfilled' && typeof r.value === 'number')
-                .map(r => r.value)
-                .sort((a, b) => a - b);
-            
-            if (validResults.length > 0) {
-                const min = validResults[0];
-                const max = validResults[validResults.length - 1];
-                
-                // Fix median calculation
-                const mid = Math.floor(validResults.length / 2);
-                const median = validResults.length % 2 
-                    ? validResults[mid]
-                    : (validResults[mid - 1] + validResults[mid]) / 2;
-                
-                const avg = validResults.reduce((sum, val) => sum + val, 0) / validResults.length;
-                
-                server.speed = {min, median, max, avg};
-            } else {
-                server.speed = {min: 'Unavailable', median: 'Unavailable', max: 'Unavailable', avg: 'Unavailable'};
-            }
-            
-            updateResult(server);
-        }));
-        
-        // Update loading message for each batch
-        document.getElementById('loadingText').textContent = `Testing DNS servers... (${Math.min(i + CONCURRENT_LIMIT, dnsServers.length)}/${dnsServers.length})`;
+    const CONCURRENT = 5;
+    for (let i = 0; i < dnsServers.length; i += CONCURRENT) {
+        await Promise.all(dnsServers.slice(i, i + CONCURRENT).map(testServer));
+        document.getElementById('loadingText').textContent = `Testing... (${Math.min(i + CONCURRENT, dnsServers.length)}/${dnsServers.length})`;
     }
-    
-    showBestDNS();
 }
 
-async function measureDNSSpeed(dohUrl, hostname, serverType = 'post', allowCors = false) {
+// === Test Single Server ===
+async function testServer(server) {
+    const dohUrl = normalizeDoHUrl(server.url);
+    if (!dohUrl) {
+        server.speed = { min: 'Unavailable', median: 'Unavailable', avg: 'Unavailable', max: 'Unavailable' };
+        server.individualResults = topWebsites.map(w => ({ website: w, speed: 'Unavailable' }));
+        appendResultRow(server);
+        return;
+    }
+
+    const results = await Promise.allSettled(topWebsites.map(host => measureDNSSpeed(dohUrl, host, server.type || 'post')));
+    server.individualResults = topWebsites.map((host, i) => ({
+        website: host,
+        speed: results[i].status === 'fulfilled' && typeof results[i].value === 'number' ? results[i].value : 'Unavailable'
+    }));
+
+    const valid = results.filter(r => r.status === 'fulfilled' && typeof r.value === 'number').map(r => r.value).sort((a, b) => a - b);
+    if (valid.length > 0) {
+        const min = valid[0], max = valid[valid.length - 1];
+        const mid = Math.floor(valid.length / 2);
+        const median = valid.length % 2 === 1 ? valid[mid] : (valid[mid - 1] + valid[mid]) / 2;
+        const avg = valid.reduce((a, b) => a + b, 0) / valid.length;
+        server.speed = { min, median, max, avg };
+    } else {
+        server.speed = { min: 'Unavailable', median: 'Unavailable', avg: 'Unavailable', max: 'Unavailable' };
+    }
+
+    appendResultRow(server);
+    chartData.push({ name: server.name, avg: server.speed.avg, min: server.speed.min, max: server.speed.max });
+}
+
+// === Measure Speed with dns-packet ===
+async function measureDNSSpeed(dohUrl, hostname, method = 'post') {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    const start = performance.now();
 
     try {
-        const startTime = performance.now();
+        const packet = dnsPacket.encode({
+            type: 'query',
+            id: Math.floor(Math.random() * 65536),
+            flags: 0,
+            questions: [{ type: 'A', name: hostname }]
+        });
 
-        if (serverType === 'get') {
-            const urlWithParam = new URL(dohUrl);
-            urlWithParam.searchParams.append('name', hostname);
-            urlWithParam.searchParams.append('type', 'A');
-            urlWithParam.searchParams.append('cd', 'true');
-            urlWithParam.searchParams.append('nocache', Date.now());
+        const url = method === 'get' ? `${dohUrl}?dns=${btoa(String.fromCharCode(...packet))}` : dohUrl;
+        const res = await fetch(url, {
+            method: method === 'get' ? 'GET' : 'POST',
+            headers: method === 'post' ? { 'Content-Type': 'application/dns-message' } : { 'Accept': 'application/dns-message' },
+            body: method === 'post' ? packet : undefined,
+            signal: controller.signal,
+            cache: 'no-store'
+        });
 
-            let fetchOptions = {
-                method: 'GET', 
-                signal: controller.signal,
-                cache: 'no-store'
-            };
-
-            if (allowCors) {
-                fetchOptions.headers = {'Accept': 'application/dns-json'};
-            } else {
-                fetchOptions.mode = 'no-cors';
-            }
-
-            const response = await fetch(urlWithParam, fetchOptions);
-            
-            // Only check response.ok if we're in CORS mode
-            if (allowCors && !response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-        } else {
-            const dnsQuery = buildDNSQuery(hostname);
-            let fetchOptions = {
-                method: 'POST', 
-                body: dnsQuery, 
-                mode: allowCors ? 'cors' : 'no-cors', 
-                signal: controller.signal,
-                cache: 'no-store'
-            };
-
-            if (allowCors) {
-                fetchOptions.headers = {'Content-Type': 'application/dns-message'};
-            }
-
-            const response = await fetch(dohUrl, fetchOptions);
-            
-            // Only check response.ok if we're in CORS mode
-            if (allowCors && !response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-        }
-
-        clearTimeout(timeoutId);
-        const endTime = performance.now();
-        return endTime - startTime;
-    } catch (error) {
-        clearTimeout(timeoutId);
-        if (error.name !== 'AbortError') {
-            console.debug('DNS speed measure failed:', error);
-        }
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        clearTimeout(timeout);
+        return performance.now() - start;
+    } catch {
+        clearTimeout(timeout);
         return null;
     }
 }
 
-function buildDNSQuery(hostname) {
-    const header = new Uint8Array([0x00, 0x00, 0x01, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]);
-    const labels = hostname.split('.');
-    const question = labels.flatMap(label => {
-        const length = label.length;
-        return [length, ...Array.from(label).map(c => c.charCodeAt(0))];
-    });
-    const typeAndClass = new Uint8Array([0x00, 0x01, 0x00, 0x01]);
-    const query = new Uint8Array(header.length + question.length + 2 + typeAndClass.length);
-    query.set(header);
-    query.set(question, header.length);
-    query.set([0x00], header.length + question.length);
-    query.set(typeAndClass, header.length + question.length + 1);
-    return query;
-}
+// === Append Row Efficiently ===
+function appendResultRow(server) {
+    const row = document.createElement('tr');
+    row.dataset.serverName = server.name;
+    row.className = 'border-b border-gray-300 hover:bg-gray-200 dark:border-gray-600 dark:hover:bg-gray-700';
 
-function updateResult(server) {
-    const table = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
-    let row = document.querySelector(`tr[data-server-name="${server.name}"]`);
-    let detailsRow;
-
-    if (!row) {
-        row = document.createElement('tr');
-        row.setAttribute('data-server-name', server.name);
-        row.classList.add('border-b', 'border-gray-300', 'hover:bg-gray-200', 'dark:border-gray-600', 'dark:hover:bg-gray-700');
-        table.appendChild(row);
-
-        detailsRow = document.createElement('tr');
-        detailsRow.classList.add('details-row', 'hidden', 'border-b', 'border-gray-300', 'hover:bg-gray-200', 'dark:border-gray-600', 'dark:hover:bg-gray-700');
-        table.appendChild(detailsRow);
-    } else {
-        detailsRow = row.nextElementSibling;
-    }
+    const ips = server.ips?.join(', ') || 'No IP';
+    const url = server.url || 'N/A';
 
     row.innerHTML = `
-        <td class="text-left py-2 px-4 dark:text-gray-300">${server.name} 
-        <span class="copy-btn cursor-pointer ml-2 px-2 py-1 text-xs rounded flex items-center gap-1 transition-all duration-200 hover:-translate-y-0.5 select-none inline-flex" onclick="copyToClipboard('DoH Server URL: ${server.url}' + '\\n' + 'IP Addresses: ${server.ips.join(', ')}', this)" title="Copy server details">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-            </svg>
-            Copy
-        </span></td>
-        <td class="text-center py-2 px-4 dark:text-gray-300">${server.speed.min !== 'Unavailable' ? server.speed.min.toFixed(2) : 'Unavailable'}</td>
-        <td class="text-center py-2 px-4 dark:text-gray-300">${server.speed.median !== 'Unavailable' ? server.speed.median.toFixed(2) : 'Unavailable'}</td>
-        <td class="text-center py-2 px-4 dark:text-gray-300"> ${server.speed.avg !== 'Unavailable' ? server.speed.avg.toFixed(2) : 'Unavailable'}</td>
-        <td class="text-center py-2 px-4 dark:text-gray-300">${server.speed.max !== 'Unavailable' ? server.speed.max.toFixed(2) : 'Unavailable'}</td>
+        <td class="text-left py-2 px-4 dark:text-gray-300">${server.name}
+            <span class="copy-btn cursor-pointer ml-2 px-2 py-1 text-xs rounded inline-flex items-center gap-1" data-copy="DoH: ${url}\\nIPs: ${ips}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                Copy
+            </span>
+        </td>
+        <td class="text-center py-2 px-4 dark:text-gray-300">${formatSpeed(server.speed.min)}</td>
+        <td class="text-center py-2 px-4 dark:text-gray-300">${formatSpeed(server.speed.median)}</td>
+        <td class="text-center py-2 px-4 dark:text-gray-300">${formatSpeed(server.speed.avg)}</td>
+        <td class="text-center py-2 px-4 dark:text-gray-300">${formatSpeed(server.speed.max)}</td>
     `;
 
-    detailsRow.innerHTML = `
-    <td colspan="4" class="py-2 px-4 dark:bg-gray-800 dark:text-gray-300">
-        <div>Timings for each hostname:</div>
-        <ul>
-            ${server.individualResults.map(result => {
-        if (typeof result.speed === 'number') {
-            return `<li>${result.website}: ${result.speed.toFixed(2)} ms</li>`;
-        } else {
-            return `<li>${result.website}: Unavailable</li>`;
-        }
-    }).join('')}
-        </ul>
-    </td>
-`;
+    const details = document.createElement('tr');
+    details.className = 'details-row hidden border-b border-gray-300 dark:border-gray-600';
+    details.innerHTML = `<td colspan="5" class="py-2 px-4 dark:bg-gray-800">
+        <div>Hostname timings:</div>
+        <ul>${server.individualResults.map(r => `<li>${r.website}: ${typeof r.speed === 'number' ? r.speed.toFixed(2) + ' ms' : 'Unavailable'}</li>`).join('')}</ul>
+    </td>`;
 
-    updateChartWithData(server);
+    resultFragment.appendChild(row);
+    resultFragment.appendChild(details);
+
+    row.querySelector('[data-copy]').addEventListener('click', function () {
+        copyToClipboard(this.dataset.copy, this);
+    });
 }
 
-function sortTable(columnIndex) {
-    const table = document.getElementById('resultsTable');
-    const tbody = table.querySelector('tbody');
+function formatSpeed(val) { return val !== 'Unavailable' ? val.toFixed(2) : 'Unavailable'; }
+
+// === Sort Table with Details ===
+function sortTable(col) {
+    const tbody = document.querySelector('#resultsTable tbody');
     const rows = Array.from(tbody.querySelectorAll('tr:not(.details-row)'));
-    
-    const rowPairs = rows.map(row => {
-        const detailsRow = row.nextElementSibling && row.nextElementSibling.classList.contains('details-row') 
-            ? row.nextElementSibling 
-            : null;
-        return [row, detailsRow];
+    const pairs = rows.map(r => [r, r.nextElementSibling?.classList.contains('details-row') ? r.nextElementSibling : null]);
+
+    pairs.sort((a, b) => {
+        const A = a[0].cells[col].textContent.trim();
+        const B = b[0].cells[col].textContent.trim();
+        const valA = A === 'Unavailable' ? Infinity : parseFloat(A);
+        const valB = B === 'Unavailable' ? Infinity : parseFloat(B);
+        return valA - valB;
     });
 
-    rowPairs.sort((a, b) => {
-        const cellA = a[0].cells[columnIndex]?.textContent.trim();
-        const cellB = b[0].cells[columnIndex]?.textContent.trim();
-
-        if (!cellA || !cellB) {
-            console.error("Undefined cell encountered", {
-                cellA, cellB, rowIndexA: a[0].rowIndex, rowIndexB: b[0].rowIndex
-            });
-            return 0;
-        }
-
-        const valA = cellA === 'Unavailable' ? Number.POSITIVE_INFINITY : parseFloat(cellA) || 0;
-        const valB = cellB === 'Unavailable' ? Number.POSITIVE_INFINITY : parseFloat(cellB) || 0;
-
-        if (valA < valB) return -1;
-        if (valA > valB) return 1;
-        return 0;
-    });
-
-    // Re-append rows in sorted order
-    rowPairs.forEach(pair => {
-        tbody.appendChild(pair[0]);
-        if (pair[1]) tbody.appendChild(pair[1]);
+    pairs.forEach(([row, details]) => {
+        tbody.appendChild(row);
+        if (details) tbody.appendChild(details);
     });
 }
 
-function copyToClipboard(text, buttonElement) {
+// === Copy to Clipboard ===
+function copyToClipboard(text, el) {
     navigator.clipboard.writeText(text).then(() => {
-        buttonElement.classList.add('copied');
-        buttonElement.innerHTML = `
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
-            </svg>
-            Copied!
-        `;
-
+        el.classList.add('copied');
+        el.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Copied!`;
         setTimeout(() => {
-            buttonElement.classList.remove('copied');
-            buttonElement.innerHTML = `
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                </svg>
-                Copy
-            `;
-        }, 2000);
-    }).catch(err => {
-        console.error('Error in copying text: ', err);
-        buttonElement.innerHTML = `
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-            </svg>
-            Error
-        `;
-        setTimeout(() => {
-            buttonElement.innerHTML = `
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
-                </svg>
-                Copy
-            `;
+            el.classList.remove('copied');
+            el.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Copy`;
         }, 2000);
     });
 }
 
-document.getElementById('cta').addEventListener('click', function () {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Find the Fastest DNS Server for You',
-            text: 'Check out this tool to find the fastest DNS server for your location!',
-            url: window.location.href
-        }).then(() => {
-            console.log('Thanks for sharing!');
-        }).catch(console.error);
-    } else {
-        // Fallback to copy URL
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            alert('URL copied to clipboard!');
-        }).catch(err => {
-            console.error('Failed to copy URL: ', err);
-        });
-    }
-});
-
-window.addEventListener('resize', function () {
-    if (dnsChart) {
-        dnsChart.resize();
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function () {
+// === Modals, Share, Resize ===
+document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById("websiteModal");
-    const btn = document.getElementById("editButton");
-    const span = document.getElementsByClassName("close")[0];
-    const addBtn = document.getElementById("addHostname");
-    const input = document.getElementById("newWebsite");
-    const list = document.getElementById("websiteList");
-
-    function renderList() {
-        list.innerHTML = '';
-        topWebsites.forEach((site, index) => {
-            const li = document.createElement("li");
-            li.className = 'px-2 py-1 mb-1 bg-gray-200 rounded flex justify-between items-center border-b border-gray-300 dark:bg-gray-700 dark:border-gray-600';
-
-            const siteText = document.createElement("span");
-            siteText.textContent = site;
-            li.appendChild(siteText);
-
-            const removeBtn = document.createElement("button");
-            removeBtn.className = 'bg-red-500 text-white rounded px-2 py-1 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800';
-            removeBtn.textContent = 'Delete';
-            removeBtn.onclick = function () {
-                topWebsites.splice(index, 1);
-                renderList();
-            };
-
-            li.appendChild(removeBtn);
-            list.appendChild(li);
-        });
-        checkButton.disabled = topWebsites.length === 0;
-    }
-
-    btn.onclick = function () {
-        modal.style.display = "block";
-        renderList();
-    }
-
-    function validateAndExtractHost(input) {
-        // Allow full URLs
-        try {
-            const url = new URL(input);
-            if (url.protocol !== "http:" && url.protocol !== "https:") {
-                throw new Error("Invalid protocol");
-            }
-            return url.hostname;
-        } catch (e) {
-            // Or just hostname
-            const hostnameRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z]{2,})+$/;
-            if (hostnameRegex.test(input)) {
-                return input;
-            } else {
-                return null;
-            }
-        }
-    }
-
-    span.onclick = function () {
-        modal.style.display = "none";
-    }
-
-    addBtn.onclick = function () {
-        const host = validateAndExtractHost(input.value);
-        if (host) {
-            if (!topWebsites.includes(host)) {
-                topWebsites.push(host);
-                renderList();
-            } else {
-                alert("This website is already in the list.");
-            }
-        } else {
-            alert("Please enter a valid URL or hostname.");
-        }
-        input.value = '';
-    }
-
-    window.onclick = function (event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    }
-
     const dohModal = document.getElementById("dohModal");
-    const dohBtn = document.getElementById("editDoHButton");
-    const closeDohBtn = dohModal.querySelector(".close");
-    const addDoHBtn = document.getElementById("suggestDoHServer");
-    const newDoHName = document.getElementById("newDoHName");
-    const newDoHUrl = document.getElementById("newDoHUrl");
-    const newDoHIPs = document.getElementById("newDoHIPs");
 
-    dohBtn.onclick = function () {
-        dohModal.style.display = "block";
+    document.getElementById("editButton").onclick = () => { modal.style.display = "block"; renderList(); };
+    document.getElementById("editDoHButton").onclick = () => dohModal.style.display = "block";
+
+    modal.querySelector(".close").onclick = () => modal.style.display = "none";
+    dohModal.querySelector(".close").onclick = () => dohModal.style.display = "none";
+
+    document.getElementById("addHostname").onclick = () => {
+        const host = validateAndExtractHost(document.getElementById("newWebsite").value);
+        if (host && !topWebsites.includes(host)) topWebsites.push(host);
+        else if (!host) alert("Invalid hostname!");
+        document.getElementById("newWebsite").value = '';
+        renderList();
     };
 
-    closeDohBtn.onclick = function () {
-        dohModal.style.display = "none";
-    };
-
-    addDoHBtn.onclick = function () {
-        const name = newDoHName.value.trim();
-        const url = newDoHUrl.value.trim();
-        const ips = newDoHIPs.value.trim();
-
-        if (!name || !url) {
-            alert('Please fill in Name and URL.');
-            return;
-        }
-
-        // Validate URL
-        try {
-            new URL(url);
-        } catch (e) {
-            alert('Please enter a valid URL.');
-            return;
-        }
-
-        const title = encodeURIComponent(`[DNS Suggestion] Add ${name}`);
-        const body = encodeURIComponent(
-            `**Suggested DNS Server**\n\n` +
-            `- **Name**: ${name}\n` +
-            `- **DoH URL**: ${url}\n` +
-            `- **IPs**: ${ips || 'Not provided'}\n\n` +
-            `Submitted via DoHSpeedTest tool.`
-        );
-
-        const issuesUrl = `https://github.com/Argh94/DoHSpeedTest/issues/new?title=${title}&body=${body}`;
-        window.open(issuesUrl, '_blank');
-        dohModal.style.display = 'none';
-    };
-
-    window.onclick = function (event) {
-        if (event.target === dohModal) {
+    document.getElementById("suggestDoHServer").onclick = () => {
+        const name = document.getElementById("newDoHName").value.trim();
+        const url = document.getElementById("newDoHUrl").value.trim();
+        if (name && url) {
+            const issuesUrl = `https://github.com/Argh94/DoHSpeedTest/issues/new?title=[DNS Suggestion] Add ${encodeURIComponent(name)}&body=${encodeURIComponent(`Name: ${name}\nDoH URL: ${url}\nIPs: ${document.getElementById("newDoHIPs").value}`)}`;
+            window.open(issuesUrl, '_blank');
             dohModal.style.display = "none";
         }
     };
-    
-    // Table row toggle for details
-    document.getElementById('resultsTable').addEventListener('click', function (event) {
-        const row = event.target.closest('tr');
+
+    function renderList() {
+        const list = document.getElementById("websiteList");
+        list.innerHTML = '';
+        topWebsites.forEach((site, i) => {
+            const li = document.createElement("li");
+            li.className = 'px-2 py-1 mb-1 bg-gray-200 rounded flex justify-between items-center border-b border-gray-300 dark:bg-gray-700';
+            li.innerHTML = `<span>${site}</span><button class="bg-red-500 text-white rounded px-2 py-1">Delete</button>`;
+            li.querySelector("button").onclick = () => { topWebsites.splice(i, 1); renderList(); };
+            list.appendChild(li);
+        });
+    }
+
+    function validateAndExtractHost(input) {
+        try { const u = new URL(input); return u.hostname; }
+        catch { return /^[a-z0-9.-]+\.[a-z]{2,}$/i.test(input) ? input : null; }
+    }
+
+    document.getElementById('resultsTable').addEventListener('click', e => {
+        const row = e.target.closest('tr');
         if (row && !row.classList.contains('details-row')) {
-            const detailsRow = row.nextElementSibling;
-            if (detailsRow && detailsRow.classList.contains('details-row')) {
-                detailsRow.classList.toggle('hidden');
-            }
+            const details = row.nextElementSibling;
+            if (details && details.classList.contains('details-row')) details.classList.toggle('hidden');
         }
     });
+
+    document.getElementById('cta').onclick = () => {
+        if (navigator.share) navigator.share({ title: 'DoHSpeedTest', url: location.href });
+        else navigator.clipboard.writeText(location.href).then(() => alert('URL copied!'));
+    };
+
+    window.onclick = e => { if (e.target === modal || e.target === dohModal) e.target.style.display = "none"; };
+    window.addEventListener('resize', () => dnsChart?.resize());
 });
+
+// === Particles Animation (Optional) ===
+const canvas = document.getElementById('particles-canvas');
+if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resize() { canvas.width = innerWidth; canvas.height = innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.vx = (Math.random() - 0.5) * 1.5;
+            this.vy = (Math.random() - 0.5) * 1.5;
+            this.radius = Math.random() * 2 + 1;
+            this.color = `hsl(${Math.random() * 60 + 180}, 100%, 70%)`;
+            this.life = 0; this.maxLife = Math.random() * 100 + 100;
+        }
+        update() {
+            this.x += this.vx; this.y += this.vy; this.life++;
+            if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+            if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+            this.x = Math.max(0, Math.min(canvas.width, this.x));
+            this.y = Math.max(0, Math.min(canvas.height, this.y));
+        }
+        draw() {
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+            ctx.fillStyle = this.color; ctx.shadowBlur = 10; ctx.shadowColor = this.color; ctx.fill(); ctx.shadowBlur = 0;
+        }
+    }
+
+    function initParticles(n) { for (let i = 0; i < n; i++) particles.push(new Particle()); }
+    function animate() {
+        ctx.fillStyle = 'rgba(15,15,30,0.1)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => { p.update(); p.draw(); });
+        particles = particles.filter(p => p.life < p.maxLife);
+        if (particles.length < 80) particles.push(new Particle());
+        requestAnimationFrame(animate);
+    }
+
+    initParticles(80); animate();
+}
