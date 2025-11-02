@@ -5,187 +5,67 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DoHSpeedTest - Fastest DNS for Gaming & Internet</title>
     <meta name="description" content="Test DNS speed in real-time. Find the best DNS for gaming, bypassing sanctions, and fast internet.">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        /* Animated Electronic Wave Background */
-        body {
-            background: linear-gradient(-45deg, #0f0f1e, #1a1a2e, #16213e, #0f3460);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-            margin: 0;
-            padding: 0;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Electric Particles Canvas */
-        #particles-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Electronic Waves */
-        .wave {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 200px;
-            background: url('data:image/svg+xml;utf8,<svg viewBox="0 0 1200 200" xmlns="http://www.w3.org/2000/svg"><path d="M0,100 Q300,50 600,100 T1200,100 L1200,200 L0,200 Z" fill="%231e40af" opacity="0.3"/><path d="M0,120 Q300,70 600,120 T1200,120 L1200,200 L0,200 Z" fill="%233b82f6" opacity="0.2"/></svg>') repeat-x;
-            background-size: 2400px 200px;
-            animation: waveMove 20s linear infinite;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        @keyframes waveMove {
-            0% { background-position: 0 0; }
-            100% { background-position: -2400px 0; }
-        }
-
-        /* Glassmorphism Cards */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            position: relative;
-            z-index: 10;
-        }
-
-        .glass-header {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .glass-button {
-            background: rgba(59, 130, 246, 0.2);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            transition: all 0.3s ease;
-        }
-
-        .glass-button:hover {
-            background: rgba(59, 130, 246, 0.35);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: #3b82f6;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        .hidden { display: none; }
-        .chart-container { height: 400px; }
-        @media (max-width: 768px) { .chart-container { height: 500px; } }
-
-        /* Copy Button in Table - Neon Blue */
-        .copy-btn {
-            background: rgba(59, 130, 246, 0.2);
-            border: 1px solid rgba(59, 130, 246, 0.4);
-            color: #60a5fa;
-            transition: all 0.2s ease;
-        }
-        .copy-btn:hover {
-            background: rgba(59, 130, 246, 0.4);
-            color: white;
-            transform: translateY(-1px);
-        }
-        .copy-btn.copied {
-            background: rgba(34, 197, 94, 0.3);
-            border-color: rgba(34, 197, 94, 0.5);
-            color: #86efac;
-        }
-    </style>
+    
+    <!-- CSS File Link -->
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="text-white">
-    <!-- Electric Particles -->
+<body>
+    <!-- Electric Particles (Placeholder) -->
     <canvas id="particles-canvas"></canvas>
 
     <!-- Animated Waves -->
     <div class="wave"></div>
 
-    <div class="container mx-auto px-4 py-8 max-w-6xl relative z-10">
+    <div class="container">
         <!-- Glass Header -->
-        <header class="glass-header text-center mb-10 p-6 rounded-2xl">
-            <h1 class="text-5xl font-extrabold mb-3 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-cyan-300">
-                DoHSpeedTest
-            </h1>
-            <p class="text-lg opacity-90">Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
+        <header class="glass-header">
+            <h1>DoHSpeedTest</h1>
+            <p>Find the fastest DNS for gaming, streaming & bypassing restrictions</p>
         </header>
 
         <!-- Main Glass Card -->
-        <div class="glass-card p-6 md:p-8 mb-8">
-            <div class="flex flex-col md:flex-row gap-4 mb-6">
-                <button id="checkButton" class="flex-1 glass-button text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div class="glass-card">
+            <div class="flex">
+                <button id="checkButton" class="glass-button">
                     Start DNS Test
                 </button>
-                <button id="editButton" class="glass-button text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                <button id="editButton" class="glass-button">
                     Edit Hosts
                 </button>
-                <button id="editDoHButton" class="glass-button text-white font-bold py-3 px-6 rounded-xl flex items-center justify-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+                <button id="editDoHButton" class="glass-button">
                     Suggest DNS
                 </button>
             </div>
 
-            <div id="loadingMessage" class="hidden text-center py-8">
-                <p class="text-lg font-medium mb-4" id="loadingText"></p>
-                <div class="spinner mx-auto"></div>
+            <div id="loadingMessage" class="hidden text-center">
+                <p id="loadingText">Starting...</p>
+                <div class="spinner"></div>
             </div>
 
             <!-- Results Table -->
-            <div id="dnsResults" class="mt-8 overflow-x-auto">
-                <table id="resultsTable" class="w-full table-auto border-collapse">
+            <div id="dnsResults">
+                <table id="resultsTable">
                     <thead>
-                        <tr class="bg-gradient-to-r from-blue-600 to-purple-700 text-white">
-                            <th class="text-left py-3 px-4 cursor-pointer" onclick="sortTable(0)">DNS Server</th>
-                            <th class="text-center py-3 px-4 cursor-pointer" onclick="sortTable(1)">Min (ms)</th>
-                            <th class="text-center py-3 px-4 cursor-pointer" onclick="sortTable(2)">Median (ms)</th>
-                            <th class="text-center py-3 px-4 cursor-pointer" onclick="sortTable(3)">Avg (ms)</th>
-                            <th class="text-center py-3 px-4 cursor-pointer" onclick="sortTable(4)">Max (ms)</th>
+                        <tr>
+                            <th>DNS Server</th>
+                            <th>Min (ms)</th>
+                            <th>Median (ms)</th>
+                            <th>Avg (ms)</th>
+                            <th>Max (ms)</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-transparent"></tbody>
+                    <tbody>
+                        <!-- Results will be injected here -->
+                    </tbody>
                 </table>
             </div>
 
             <!-- Best DNS Box -->
-            <div id="bestDNSContainer" class="mt-10"></div>
+            <div id="bestDNSContainer"></div>
 
             <!-- Chart -->
-            <div id="chartContainer" class="hidden mt-12 glass-card p-6 rounded-2xl">
-                <h3 class="text-2xl font-bold text-center mb-6 text-cyan-300">DNS Speed Comparison</h3>
+            <div id="chartContainer" class="hidden">
+                <h3>DNS Speed Comparison</h3>
                 <div class="chart-container">
                     <canvas id="dnsChart"></canvas>
                 </div>
@@ -193,34 +73,32 @@
         </div>
 
         <!-- Share Button -->
-        <div class="text-center mt-10">
-            <button id="cta" class="glass-button text-white font-bold py-3 px-8 rounded-xl flex items-center gap-2 mx-auto">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m.684 2.684c-.174.404-.393.86-.593 1.316M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H9m-2 0h2"/></svg>
+        <div class="text-center">
+            <button id="cta" class="glass-button">
                 Share Tool
             </button>
         </div>
 
         <!-- Disclaimer & Technical Notes -->
-        <div class="mt-16 glass-card p-6 md:p-8 rounded-2xl max-w-5xl mx-auto">
-            <h2 class="text-2xl font-bold text-cyan-300 mb-6 text-center">Disclaimer & Technical Notes</h2>
-            <div class="space-y-5 text-gray-200 leading-relaxed text-sm md:text-base">
-                <p><strong>This DNS Speed Test tool runs entirely in your browser</strong>, sending live DNS-over-HTTPS (DoH) queries from your local environment. No server-side code is involved, and <strong>no personal data is collected</strong>. By measuring directly from your current network, the tool aims to provide accurate, real-world results.</p>
-                <p><strong>Time Measurement & Browser Overhead:</strong> We use the browser's <code>fetch</code> and <code>performance.now()</code> APIs to measure full DoH round-trip times. Because this includes HTTP/TLS overhead, results may be higher than raw DNS queries performed by other tools. Depending on server capabilities, our script may use GET or POST, CORS or no-cors mode. Some endpoints require a preflight request, which can slightly affect timings.</p>
-                <p><strong>Timeouts & Unavailable Results:</strong> Each query times out after 5 seconds. If a server does not respond in that window, it appears as <em>Unavailable</em>. This ensures the test continues promptly even when certain DNS endpoints are slow or unreachable.</p>
-                <p><strong>Influence of Local Conditions:</strong> Network latency, bandwidth, and browser load can cause variability. We recommend running multiple tests at different times or under different network conditions to get a broader picture. The tool's output is best used as a <strong>relative comparison</strong> among DNS servers under your specific circumstances rather than an absolute global measure.</p>
-                <p>While we strive for accuracy by testing each DNS server with the same set of hostnames (and reusing warm connections), results are still <strong>indicative</strong>. Use them as a guide when deciding which DNS server offers the best performance for your location and environment.</p>
+        <div class="glass-card mt-16">
+            <h2>Disclaimer & Technical Notes</h2>
+            <div class="space-y-5">
+                <p><strong>This DNS Speed Test tool runs entirely in your browser</strong>, sending live DNS-over-HTTPS (DoH) queries from your local environment. No server-side code is involved, and <strong>no personal data is collected</strong>.</p>
+                <p><strong>Time Measurement & Browser Overhead:</strong> We use the browser's <code>fetch</code> and <code>performance.now()</code> APIs to measure full DoH round-trip times. Results include HTTP/TLS overhead.</p>
+                <p><strong>Timeouts & Unavailable Results:</strong> Each query times out after 5 seconds. If a server does not respond, it appears as <em>Unavailable</em>.</p>
+                <p><strong>Influence of Local Conditions:</strong> Network latency, bandwidth, and browser load can cause variability. Run multiple tests for better accuracy.</p>
+                <p>Results are <strong>indicative</strong>. Use them as a guide for relative comparison under your specific network conditions.</p>
             </div>
         </div>
 
         <!-- GitHub Link + Star Button -->
-        <div class="mt-12 text-center glass-card p-6 rounded-2xl max-w-2xl mx-auto">
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
+        <div class="glass-card mt-12 text-center">
+            <div class="flex-col-sm-row">
                 <a href="https://github.com/Argh94" target="_blank" class="flex items-center gap-3 text-cyan-300 hover:text-cyan-100 transition">
                     <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" class="w-10 h-10">
                     <span class="font-medium">Follow @Argh94 on GitHub</span>
                 </a>
-                <a href="https://github.com/Argh94/DoHSpeedTest" target="_blank" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold py-2 px-6 rounded-full hover:shadow-lg hover:scale-105 transition flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <a href=" Index.html" target="_blank" class="bg-gradient-purple-pink">
                     Star on GitHub
                 </a>
             </div>
@@ -228,144 +106,30 @@
     </div>
 
     <!-- Modals -->
-    <div id="websiteModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
-        <div class="glass-card p-6 w-full max-w-md mx-4">
+    <div id="websiteModal" class="fixed inset-0 bg-black hidden flex items-center justify-center z-50">
+        <div class="glass-card max-w-md w-full mx-4 p-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Edit Hosts</h3>
-                <span class="close cursor-pointer text-gray-400 hover:text-white">&times;</span>
+                <h3>Edit Hosts</h3>
+                <span class="close">x</span>
             </div>
-            <input type="text" id="newWebsite" placeholder="e.g. valorant.riotgames.com" class="w-full px-4 py-2 mb-3 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400">
-            <button id="addHostname" class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 mb-4">Add Host</button>
-            <ul id="websiteList" class="space-y-2"></ul>
+            <input type="text" id="newWebsite" placeholder="e.g. valorant.riotgames.com">
+            <button id="addHostname" class="w-full bg-blue-600 py-2 rounded-lg mb-4">Add Host</button>
+            <ul id="websiteList"></ul>
         </div>
     </div>
 
-    <div id="dohModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50">
-        <div class="glass-card p-6 w-full max-w-md mx-4">
+    <div id="dohModal" class="fixed inset-0 bg-black hidden flex items-center justify-center z-50">
+        <div class="glass-card max-w-md w-full mx-4 p-6">
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-bold">Suggest DNS Server</h3>
-                <span class="close cursor-pointer text-gray-400 hover:text-white">&times;</span>
+                <h3>Suggest DNS Server</h3>
+                <span class="close">x</span>
             </div>
-            <p class="text-sm text-gray-300 mb-4">Your suggestion will be sent to GitHub Issues for review.</p>
-            <input type="text" id="newDoHName" placeholder="Server Name (e.g. Shecan)" class="w-full px-4 py-2 mb-3 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400">
-            <input type="text" id="newDoHUrl" placeholder="DoH URL (e.g. https://free.shecan.ir/dns-query)" class="w-full px-4 py-2 mb-3 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400">
-            <input type="text" id="newDoHIPs" placeholder="IPs (comma-separated, optional)" class="w-full px-4 py-2 mb-4 bg-white bg-opacity-10 border border-gray-500 rounded-lg text-white placeholder-gray-400">
-            <button id="suggestDoHServer" class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg hover:shadow-lg transition">Submit to GitHub Issues</button>
+            <p class="text-sm mb-4">Your suggestion will be sent to GitHub Issues for review.</p>
+            <input type="text" id="newDoHName" placeholder="Server Name (e.g. Shecan)">
+            <input type="text" id="newDoHUrl" placeholder="DoH URL (e.g. https://free.shecan.ir/dns-query)">
+            <input type="text" id="newDoHIPs" placeholder="IPs (comma-separated, optional)">
+            <button id="suggestDoHServer" class="w-full bg-gradient-purple-pink py-2 rounded-lg mt-4">Submit to GitHub Issues</button>
         </div>
     </div>
-
-    <script src="script.js"></script>
-
-    <!-- Electric Particles Script -->
-    <script>
-        // Electric Particles with Collision Glow
-        const canvas = document.getElementById('particles-canvas');
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        class Particle {
-            constructor() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.vx = (Math.random() - 0.5) * 1.5;
-                this.vy = (Math.random() - 0.5) * 1.5;
-                this.radius = Math.random() * 2 + 1;
-                this.color = `hsl(${Math.random() * 60 + 180}, 100%, 70%)`;
-                this.life = 0;
-                this.maxLife = Math.random() * 100 + 100;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life++;
-
-                if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-                this.x = Math.max(0, Math.min(canvas.width, this.x));
-                this.y = Math.max(0, Math.min(canvas.height, this.y));
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
-                ctx.fill();
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        function initParticles(count) {
-            for (let i = 0; i < count; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function checkCollision(p1, p2) {
-            const dx = p1.x - p2.x;
-            const dy = p1.y - p2.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            return distance < 60;
-        }
-
-        function drawConnections() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    if (checkCollision(particles[i], particles[j])) {
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        const gradient = ctx.createLinearGradient(particles[i].x, particles[i].y, particles[j].x, particles[j].y);
-                        gradient.addColorStop(0, particles[i].color);
-                        gradient.addColorStop(1, particles[j].color);
-                        ctx.strokeStyle = gradient;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-
-                        // Flash effect
-                        ctx.beginPath();
-                        const midX = (particles[i].x + particles[j].x) / 2;
-                        const midY = (particles[i].y + particles[j].y) / 2;
-                        const flashGradient = ctx.createRadialGradient(midX, midY, 0, midX, midY, 20);
-                        flashGradient.addColorStop(0, 'rgba(255, 255, 255, 0.8)');
-                        flashGradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
-                        ctx.fillStyle = flashGradient;
-                        ctx.arc(midX, midY, 20, 0, Math.PI * 2);
-                        ctx.fill();
-                    }
-                }
-            }
-        }
-
-        function animate() {
-            ctx.fillStyle = 'rgba(15, 15, 30, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
-            drawConnections();
-
-            particles = particles.filter(p => p.life < p.maxLife);
-            if (particles.length < 80) particles.push(new Particle());
-
-            requestAnimationFrame(animate);
-        }
-
-        initParticles(80);
-        animate();
-    </script>
 </body>
 </html>
