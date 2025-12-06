@@ -1,4 +1,3 @@
-// ============== CONFIGURATION & UTILITIES ==============
 
 const Config = {
     timeouts: {
@@ -27,7 +26,6 @@ class AppError extends Error {
         super(message);
         this.type = type;
         this.details = details;
-        this.timestamp = new Date();
     }
 }
 
@@ -80,8 +78,6 @@ class PerformanceMonitor {
 // Global State Management
 const AppState = {
     dnsChart: null,
-    chartData: [],
-    particles: [],
     isAnimating: false,
     isTestRunning: false,
     abortController: null,
@@ -90,9 +86,7 @@ const AppState = {
     cache: new Map(),
     
     setChart(chart) { this.dnsChart = chart; },
-    addChartData(data) { this.chartData.push(data); },
     clear() {
-        this.chartData = [];
         this.dnsChart = null;
     },
     
@@ -119,8 +113,6 @@ const AppState = {
         });
     }
 };
-
-// ============== DNS SERVICE ==============
 
 class DNSService {
     constructor(servers) {
@@ -156,7 +148,7 @@ class DNSService {
     sanitizeServerData(server) {
         return {
             name: this.sanitizeString(server.name),
-            url: this.sanitizeString(server.url),
+            url: this.sanitizeString(server.url || ''),
             ips: Array.isArray(server.ips) ? server.ips.map(ip => this.sanitizeString(ip)) : [],
             type: server.type || 'post',
             allowCors: Boolean(server.allowCors)
@@ -236,7 +228,7 @@ class DNSService {
                 urlWithParam.searchParams.append('name', hostname);
                 urlWithParam.searchParams.append('type', 'A');
                 urlWithParam.searchParams.append('cd', 'true');
-                urlWithParam.searchParams.append('nocache', Date.now());
+                urlWithParam.searchParams.append('nocache', Date.now().toString());
 
                 let fetchOptions = {
                     method: 'GET', 
@@ -260,7 +252,7 @@ class DNSService {
                 let fetchOptions = {
                     method: 'POST', 
                     body: dnsQuery, 
-                    mode: allowCors ? 'cors' : 'no-cors', 
+                    mode: (allowCors ? 'cors' : 'no-cors'), 
                     signal: controller.signal,
                     cache: 'no-store'
                 };
@@ -466,10 +458,9 @@ class DNSService {
     }
 }
 
-// ============== TABLE MANAGER ==============
-
 class TableManager {
     constructor(table) {
+        if (!table) throw new Error("Table element not found");
         this.table = table;
         this.tbody = table.querySelector('tbody');
         this.rows = new Map(); // Cache rows
@@ -479,19 +470,17 @@ class TableManager {
     // Secure DOM manipulation to prevent XSS
     createTableRow(server) {
         const row = document.createElement('tr');
-        row.className = 'border-b border-gray-600 hover:bg-white hover:bg-opacity-5 transition-colors';
+        row.className = 'transition-all duration-200';
         
         // Server name cell
         const nameCell = document.createElement('td');
-        nameCell.className = 'text-left py-2 px-4 text-gray-300';
         nameCell.textContent = server.name;
         
         // Speed cells (min, median, avg, max)
         const speedCells = ['min', 'median', 'avg', 'max'].map(metric => {
             const cell = document.createElement('td');
-            cell.className = 'text-center py-2 px-4';
             
-            if (server.speed && server.speed[metric]) {
+            if (server.speed && typeof server.speed[metric] === 'number') {
                 cell.textContent = server.speed[metric].toFixed(2);
                 cell.classList.add('text-green-400');
             } else if (server.error) {
@@ -553,8 +542,8 @@ class TableManager {
         
         // Sort based on column
         rowPairs.sort((a, b) => {
-            const cellA = a[0].cells[colIndex]?.textContent.trim();
-            const cellB = b[0].cells[colIndex]?.textContent.trim();
+            const cellA = a[0].cells[colIndex]?.textContent?.trim();
+            const cellB = b[0].cells[colIndex]?.textContent?.trim();
 
             if (!cellA || !cellB) return 0;
 
@@ -595,10 +584,9 @@ class TableManager {
         const headers = Array.from(this.table.querySelectorAll('th'));
         headers.forEach((th, idx) => {
             // Remove existing arrows
-            th.textContent = th.textContent.replace(/[▲▼]$/, '');
+            th.textContent = th.textContent?.replace(/[▲▼]$/, '') || '';
             
             if (idx === activeColumn) {
-                th.textContent += direction === 1 ? ' ▲' : ' ▼';
                 th.setAttribute('aria-sort', direction === 1 ? 'ascending' : 'descending');
             } else {
                 th.setAttribute('aria-sort', 'none');
@@ -614,11 +602,11 @@ class TableManager {
     }
 }
 
-// ============== NOTIFICATION SYSTEM ==============
-
 class NotificationManager {
     constructor(containerId) {
-        this.container = document.getElementById(containerId);
+        const container = document.getElementById(containerId);
+        if (!container) throw new Error("Notification container not found");
+        this.container = container;
         this.notifications = new Map();
         this.maxNotifications = 5;
     }
@@ -664,12 +652,11 @@ class NotificationManager {
         const notification = document.createElement('div');
         notification.className = `notification p-4 rounded-lg text-white shadow-lg max-w-sm mb-2 transform translate-x-full transition-transform duration-300`;
         
-        const baseClasses = 'bg-red-600 border-red-700';
         const typeClasses = {
-            error: 'bg-red-600 border-red-700',
-            success: 'bg-green-600 border-green-700',
-            info: 'bg-blue-600 border-blue-700',
-            warning: 'bg-yellow-600 border-yellow-700'
+            error: 'notification-error',
+            success: 'notification-success',
+            info: 'notification-info',
+            warning: 'notification-warning'
         };
         
         notification.className += ` ${typeClasses[type] || typeClasses.info}`;
@@ -678,7 +665,7 @@ class NotificationManager {
         notification.innerHTML = `
             <div class="flex items-center justify-between">
                 <span class="text-sm font-medium">${this.sanitizeString(message)}</span>
-                <button onclick="notificationManager.hide('${id}')" 
+                <button onclick="window.closeNotification('${id}')" 
                         class="ml-3 text-white hover:text-gray-200" 
                         aria-label="Close notification">×</button>
             </div>
@@ -692,8 +679,6 @@ class NotificationManager {
         return str.replace(/[<>"'`&]/g, '');
     }
 }
-
-// ============== APPLICATION LOGIC ==============
 
 // Initialize services and managers
 const notificationManager = new NotificationManager('notification-container');
@@ -798,8 +783,6 @@ let topWebsites = ['google.com', 'youtube.com', 'facebook.com', 'instagram.com',
 let dnsChart;
 let chartData = [];
 
-// ============== UI UPDATE FUNCTIONS ==============
-
 function updateProgress(current, total, serverName) {
     const loadingMessage = document.getElementById('loadingMessage');
     const loadingText = document.getElementById('loadingText');
@@ -819,11 +802,7 @@ function updateProgress(current, total, serverName) {
 function updateResult(server) {
     try {
         tableManager.updateRow(server);
-        
-        // Update chart if available
-        if (dnsChart && server.speed && typeof server.speed.avg === 'number') {
-            updateChart(server);
-        }
+        updateChartWithData(server);
         
         // Show notifications for errors
         if (server.error) {
@@ -835,72 +814,232 @@ function updateResult(server) {
     }
 }
 
-function updateChart(server) {
-    if (!dnsChart || !server.speed) return;
-    
-    const existingData = dnsChart.data.datasets[0].data;
-    const existingLabels = dnsChart.data.labels;
-    
-    const existingIndex = existingLabels.indexOf(server.name);
-    
-    if (existingIndex >= 0) {
-        existingData[existingIndex] = server.speed.avg;
+function updateChartWithData(server) {
+    const existingIndex = chartData.findIndex(item => item.name === server.name);
+    const serverInfo = {
+        name: server.name,
+        avg: server.speed && server.speed.avg !== 'Unavailable' ? server.speed.avg : null,
+        min: server.speed && server.speed.min !== 'Unavailable' ? server.speed.min : null,
+        max: server.speed && server.speed.max !== 'Unavailable' ? server.speed.max : null
+    };
+
+    if (existingIndex === -1) {
+        chartData.push(serverInfo);
     } else {
-        dnsChart.data.labels.push(server.name);
-        dnsChart.data.datasets[0].data.push(server.speed.avg);
+        chartData[existingIndex] = serverInfo;
+    }
+
+    updateChart();
+}
+
+function getPerformanceColor(responseTime, allData, border = false) {
+    if (!allData || allData.length === 0) return border ? '#22c55e' : '#22c55e80';
+    
+    const validTimes = allData.map(d => d.avg).filter(t => t !== null);
+    const minTime = Math.min(...validTimes);
+    const maxTime = Math.max(...validTimes);
+    
+    if (minTime === maxTime) return border ? '#22c55e' : '#22c55e80';
+    
+    const normalized = (responseTime - minTime) / (maxTime - minTime);
+    
+    let r, g, b;
+    if (normalized <= 0.5) {
+        r = Math.round(255 * (normalized * 2));
+        g = 255;
+        b = 0;
+    } else {
+        r = 255;
+        g = Math.round(255 * (2 - normalized * 2));
+        b = 0;
     }
     
-    dnsChart.update('none');
+    const alpha = border ? '' : '80';
+    return `#${r.toString(16).padStart(2, '0')}${g.toString(16).padStart(2, '0')}${b.toString(16).padStart(2, '0')}${alpha}`;
+}
+
+function updateChart() {
+    const chartContainer = document.getElementById('chartContainer');
+    const canvas = document.getElementById('dnsChart');
+    const ctx = canvas.getContext('2d');
+    
+    const validData = chartData.filter(item => item.avg !== null).sort((a, b) => a.avg - b.avg);
+    
+    if (validData.length === 0) return;
+
+    const minHeight = 300;
+    const maxHeight = 800;
+    const heightPerServer = 35;
+    const dynamicHeight = Math.max(minHeight, Math.min(maxHeight, validData.length * heightPerServer + 100));
+    
+    const container = chartContainer.querySelector('.chart-container');
+    container.style.height = `${dynamicHeight}px`;
+
+    chartContainer.classList.remove('hidden');
+
+    if (dnsChart) {
+        dnsChart.destroy();
+    }
+
+    const minValue = Math.min(...validData.map(item => item.avg));
+    const maxValue = Math.max(...validData.map(item => item.avg));
+    const scaleMin = Math.max(0, minValue * 0.7);
+
+    dnsChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: validData.map(item => item.name),
+            datasets: [{
+                label: 'Average Response Time (ms)',
+                data: validData.map(item => item.avg),
+                backgroundColor: validData.map(item => getPerformanceColor(item.avg, validData)),
+                borderColor: validData.map(item => getPerformanceColor(item.avg, validData, true)),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            indexAxis: 'y',
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+                intersect: false,
+                mode: 'index'
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            const server = validData[context.dataIndex];
+                            return [
+                                `Average: ${server.avg.toFixed(2)}ms`,
+                                `Min: ${server.min?.toFixed(2) || 'N/A'}ms`,
+                                `Max: ${server.max?.toFixed(2) || 'N/A'}ms`
+                            ];
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    min: scaleMin,
+                    title: {
+                        display: true,
+                        text: 'Response Time (ms)'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return value.toFixed(0) + 'ms';
+                        }
+                    }
+                },
+                y: {
+                    title: {
+                        display: window.innerWidth >= 768,
+                        text: 'DNS Servers (Slowest to Fastest)'
+                    },
+                    ticks: {
+                        maxRotation: 0,
+                        font: {
+                            size: 11
+                        }
+                    },
+                    categoryPercentage: 0.8,
+                    barPercentage: 0.6
+                }
+            },
+            elements: {
+                bar: {
+                    borderWidth: 1
+                }
+            },
+            layout: {
+                padding: {
+                    left: 20,
+                    right: 20,
+                    top: 15,
+                    bottom: 15
+                }
+            }
+        }
+    });
 }
 
 function updateBestDNS() {
-    const resultsTable = document.getElementById('resultsTable');
-    const tbody = resultsTable.querySelector('tbody');
-    if (!tbody) return;
-    
-    const rows = Array.from(tbody.querySelectorAll('tr:not(.details-row)'));
-    const validServers = rows
-        .map(row => {
-            const name = row.children[0]?.textContent;
-            const avg = parseFloat(row.children[3]?.textContent);
-            const server = dnsServers.find(s => s.name === name);
-            return server && !isNaN(avg) ? { ...server, avgSpeed: avg } : null;
+    const validServers = chartData
+        .filter(d => d.avg !== null && d.avg > 0)
+        .map(d => {
+             const serverConfig = dnsServers.find(s => s.name === d.name);
+             return { ...d, ...serverConfig };
         })
-        .filter(Boolean);
+        .sort((a, b) => a.avg - b.avg)
+        .slice(0, 3);
     
-    const bestDNSContainer = document.getElementById('bestDNSContainer');
-    
+    const container = document.getElementById('bestDNSContainer');
+    if (!container) return;
+
     if (validServers.length === 0) {
-        bestDNSContainer.innerHTML = `
-            <div class="mt-8 p-6 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-300 dark:border-yellow-700 rounded-lg">
-                <h3 class="text-xl font-bold text-yellow-800 dark:text-yellow-300 mb-3">No reliable DNS found!</h3>
-                <p class="text-gray-700 dark:text-gray-300 mb-4">All DNS servers failed to respond reliably. Try running the test again.</p>
+        container.innerHTML = `
+            <div class="mt-8 p-6 bg-yellow-500/20 border border-yellow-500/50 rounded-2xl text-center">
+                <h3 class="text-xl font-bold text-yellow-300 mb-3">No reliable DNS found!</h3>
+                <p class="text-gray-300">All DNS servers failed to respond reliably. Try running the test again.</p>
             </div>
         `;
         return;
     }
     
-    validServers.sort((a, b) => a.avgSpeed - b.avgSpeed);
-    const best = validServers[0];
-    const ips = best.ips && best.ips.length > 0 ? best.ips.join(', ') : 'No IP available';
+    let html = '<div class="grid grid-cols-1 md:grid-cols-3 gap-6">';
     
-    bestDNSContainer.innerHTML = `
-        <div class="mt-8 p-6 bg-green-50 dark:bg-green-900/20 border border-green-300 dark:border-green-700 rounded-lg">
-            <h3 class="text-xl font-bold text-green-800 dark:text-green-300 mb-3">Best DNS for you:</h3>
-            <p class="font-mono text-lg mb-3"><strong>${best.name}</strong></p>
-            <p class="font-mono text-gray-700 dark:text-gray-300 mb-4 break-all">${ips}</p>
-            <button onclick="copyBestDNS('${ips.replace(/'/g, "\\'")}', this)" 
-                    class="px-6 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">
-                Copy IPs
-            </button>
-            <p class="text-xs text-gray-600 dark:text-gray-400 mt-2">Use these IPs in your network, router, or game settings.</p>
-        </div>
-    `;
-    
-    bestDNSContainer.scrollIntoView({ behavior: 'smooth' });
-}
+    validServers.forEach((server, index) => {
+        let rankClass = '';
+        let rankLabel = '';
+        let rankColor = '';
+        
+        if (index === 0) {
+            rankClass = 'border-yellow-400/50 bg-gradient-to-br from-yellow-400/10 to-transparent';
+            rankLabel = '🏆 #1 Gold';
+            rankColor = 'text-yellow-400';
+        } else if (index === 1) {
+            rankClass = 'border-gray-300/50 bg-gradient-to-br from-gray-300/10 to-transparent';
+            rankLabel = '🥈 #2 Silver';
+            rankColor = 'text-gray-300';
+        } else {
+            rankClass = 'border-orange-400/50 bg-gradient-to-br from-orange-400/10 to-transparent';
+            rankLabel = '🥉 #3 Bronze';
+            rankColor = 'text-orange-400';
+        }
 
-// ============== COPY FUNCTIONS (SECURE) ==============
+        const ips = server.ips && server.ips.length > 0 ? server.ips.join(', ') : 'No IP';
+        const safeIps = ips.replace(/'/g, "\\'");
+        
+        html += `
+            <div class="relative p-6 rounded-2xl border ${rankClass} transition-transform hover:-translate-y-1 shadow-lg">
+                <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 px-4 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-xs font-bold uppercase tracking-wider ${rankColor}">
+                    ${rankLabel}
+                </div>
+                <h3 class="text-lg font-bold text-white mt-4 mb-2 text-center h-8 flex items-center justify-center">${server.name}</h3>
+                <div class="text-center mb-4">
+                    <span class="text-3xl font-bold ${rankColor}">${server.avg.toFixed(1)}</span>
+                    <span class="text-gray-400 text-sm ml-1">ms</span>
+                </div>
+                <div class="bg-black/30 rounded-lg p-3 mb-4 font-mono text-sm text-gray-300 text-center break-all border border-white/5 min-h-[3rem] flex items-center justify-center">
+                    ${ips}
+                </div>
+                <button onclick="window.copyBestDNS('${safeIps}', this)" 
+                        class="w-full py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-semibold transition-all flex items-center justify-center gap-2 group">
+                    <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+                    Copy IPs
+                </button>
+            </div>
+        `;
+    });
+    
+    html += '</div>';
+    container.innerHTML = html;
+    container.scrollIntoView({ behavior: 'smooth' });
+}
 
 function copyToClipboard(text, buttonElement) {
     try {
@@ -925,15 +1064,6 @@ function copyToClipboard(text, buttonElement) {
         }).catch(err => {
             console.error('Error in copying text: ', err);
             notificationManager.show('Failed to copy to clipboard', 'error');
-            buttonElement.innerHTML = `
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" class="mr-1">
-                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
-                </svg>
-                Error
-            `;
-            setTimeout(() => {
-                buttonElement.innerHTML = originalHTML;
-            }, 2000);
         });
     } catch (error) {
         notificationManager.show('Copy function error', 'error');
@@ -945,115 +1075,17 @@ function copyBestDNS(ips, btn) {
     navigator.clipboard.writeText(safeIPs).then(() => {
         const originalHTML = btn.innerHTML;
         btn.disabled = true;
-        btn.innerHTML = '<span class="inline-flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Copied!</span>';
-        btn.classList.remove('bg-green-600');
-        btn.classList.add('bg-green-800');
+        btn.innerHTML = '<span class="inline-flex items-center text-green-400"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>Copied!</span>';
         
         setTimeout(() => {
             btn.innerHTML = originalHTML;
             btn.disabled = false;
-            btn.classList.remove('bg-green-800');
-            btn.classList.add('bg-green-600');
         }, 2000);
     }).catch(err => {
         console.error('Failed to copy: ', err);
         notificationManager.show('Failed to copy IPs. Please try again.', 'error');
-        
-        const originalHTML = btn.innerHTML;
-        btn.innerHTML = '<span class="inline-flex items-center"><svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>Error</span>';
-        btn.classList.remove('bg-green-600');
-        btn.classList.add('bg-red-600');
-        
-        setTimeout(() => {
-            btn.innerHTML = originalHTML;
-            btn.disabled = false;
-            btn.classList.remove('bg-red-600');
-            btn.classList.add('bg-green-600');
-        }, 3000);
     });
 }
-
-// ============== CHART FUNCTIONS ==============
-
-function showChart() {
-    const chartContainer = document.getElementById('chartContainer');
-    const chartCanvas = document.getElementById('dnsChart');
-    
-    if (!chartContainer || !chartCanvas) return;
-    
-    chartContainer.classList.remove('hidden');
-    
-    // Destroy existing chart if any
-    if (dnsChart) {
-        dnsChart.destroy();
-    }
-    
-    // Collect data from table
-    const table = document.getElementById('resultsTable');
-    const rows = Array.from(table.querySelectorAll('tbody tr:not(.details-row)'));
-    
-    const chartData = rows.map(row => {
-        const name = row.children[0]?.textContent;
-        const avg = parseFloat(row.children[3]?.textContent);
-        return { name, avg: !isNaN(avg) ? avg : 0 };
-    }).filter(item => item.avg > 0);
-    
-    chartData.sort((a, b) => b.avg - a.avg);
-    
-    dnsChart = new Chart(chartCanvas, {
-        type: 'bar',
-        data: {
-            labels: chartData.map(item => item.name),
-            datasets: [{
-                label: 'Average Response Time (ms)',
-                data: chartData.map(item => item.avg),
-                backgroundColor: 'rgba(59, 130, 246, 0.7)',
-                borderColor: 'rgba(59, 130, 246, 1)',
-                borderWidth: 1,
-                borderRadius: 4,
-                borderSkipped: false,
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: 'rgba(255, 255, 255, 0.1)'
-                    },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        callback: function(value) {
-                            return value + ' ms';
-                        }
-                    }
-                },
-                x: {
-                    grid: {
-                        display: false
-                    },
-                    ticks: {
-                        color: 'rgba(255, 255, 255, 0.7)',
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                }
-            }
-        }
-    });
-    
-    // Scroll to chart
-    chartContainer.scrollIntoView({ behavior: 'smooth' });
-}
-
-// ============== SORTING FUNCTION ==============
 
 function sortTable(columnIndex) {
     try {
@@ -1064,8 +1096,6 @@ function sortTable(columnIndex) {
     }
 }
 
-// ============== MAIN TESTING FUNCTIONS ==============
-
 async function performDNSTests() {
     if (AppState.isTestRunning) {
         notificationManager.show('Test is already running!', 'warning');
@@ -1075,26 +1105,26 @@ async function performDNSTests() {
     try {
         // Reset UI
         const checkButton = document.getElementById('checkButton');
+        const checkButtonText = document.getElementById('checkButtonText');
+        const checkButtonSpinner = document.getElementById('checkButtonSpinner');
         const loadingMessage = document.getElementById('loadingMessage');
-        const resultsTable = document.getElementById('resultsTable');
         const bestDNSContainer = document.getElementById('bestDNSContainer');
         const chartContainer = document.getElementById('chartContainer');
         
-        checkButton.disabled = true;
-        checkButton.innerHTML = `
-            <svg class="w-6 h-6 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
-            </svg>
-            Testing...
-        `;
+        if (checkButton) checkButton.disabled = true;
+        if (checkButtonText) checkButtonText.textContent = 'Testing...';
+        if (checkButtonSpinner) checkButtonSpinner.classList.remove('hidden');
         
-        loadingMessage.classList.remove('hidden');
-        loadingMessage.setAttribute('aria-busy', 'true');
+        if (loadingMessage) {
+            loadingMessage.classList.remove('hidden');
+            loadingMessage.setAttribute('aria-busy', 'true');
+        }
         
         // Clear previous results
         tableManager.clear();
-        bestDNSContainer.innerHTML = '';
-        chartContainer.classList.add('hidden');
+        chartData = []; // Clear chart data
+        if (bestDNSContainer) bestDNSContainer.innerHTML = '';
+        if (chartContainer) chartContainer.classList.add('hidden');
         
         if (dnsChart) {
             dnsChart.destroy();
@@ -1117,18 +1147,8 @@ async function performDNSTests() {
             'success'
         );
         
-        // Show chart button if we have data
-        if (successCount > 0) {
-            const chartButton = document.getElementById('cta');
-            chartButton.innerHTML = `
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
-                Show Chart
-            `;
-        }
-        
         updateBestDNS();
+        updateChart();
         
     } catch (error) {
         console.error('Test error:', error);
@@ -1141,18 +1161,18 @@ async function performDNSTests() {
     } finally {
         // Reset UI
         const checkButton = document.getElementById('checkButton');
+        const checkButtonText = document.getElementById('checkButtonText');
+        const checkButtonSpinner = document.getElementById('checkButtonSpinner');
         const loadingMessage = document.getElementById('loadingMessage');
         
-        checkButton.disabled = false;
-        checkButton.innerHTML = `
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            <span>Start DNS Test</span>
-        `;
+        if (checkButton) checkButton.disabled = false;
+        if (checkButtonText) checkButtonText.textContent = 'Start DNS Test';
+        if (checkButtonSpinner) checkButtonSpinner.classList.add('hidden');
         
-        loadingMessage.classList.add('hidden');
-        loadingMessage.setAttribute('aria-busy', 'false');
+        if (loadingMessage) {
+            loadingMessage.classList.add('hidden');
+            loadingMessage.setAttribute('aria-busy', 'false');
+        }
         
         // Show performance report
         const perfReport = dnsService.performanceMonitor.getReport();
@@ -1170,13 +1190,11 @@ function cancelTest() {
     }
 }
 
-// ============== MODAL FUNCTIONS ==============
-
 function openModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
         modal.classList.remove('hidden');
-        modal.style.display = 'flex';
+        modal.classList.add('show');
         
         // Focus first input for accessibility
         const firstInput = modal.querySelector('input');
@@ -1198,8 +1216,10 @@ function openModal(modalId) {
 function closeModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) {
-        modal.classList.add('hidden');
-        modal.style.display = 'none';
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); // Wait for transition
     }
 }
 
@@ -1299,36 +1319,18 @@ Please review and consider adding this DNS server to the testing list.`;
         urlInput.value = '';
         ipsInput.value = '';
         
+        closeModal('dohModal');
+        
     } catch (error) {
         notificationManager.show(`Error: ${error.message}`, 'error');
     }
 }
 
-// ============== SHARE FUNCTIONS ==============
-
-async function shareResults() {
-    try {
-        if (navigator.share) {
-            await navigator.share({
-                title: 'DoHSpeedTest - Fastest DNS Tool',
-                text: 'Find the fastest DNS server for your location with DoHSpeedTest!',
-                url: window.location.href
-            });
-            notificationManager.show('Thanks for sharing!', 'success');
-        } else {
-            // Fallback: copy URL to clipboard
-            await navigator.clipboard.writeText(window.location.href);
-            notificationManager.show('URL copied to clipboard!', 'success');
-        }
-    } catch (error) {
-        console.error('Share error:', error);
-        notificationManager.show('Share failed', 'error');
-    }
-}
-
-// ============== EVENT LISTENERS ==============
-
 document.addEventListener('DOMContentLoaded', function() {
+
+    // Initialize Particles
+    initParticles();
+
     // Main test button
     const checkButton = document.getElementById('checkButton');
     if (checkButton) {
@@ -1359,13 +1361,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Chart/Share button
     const ctaButton = document.getElementById('cta');
     if (ctaButton) {
-        ctaButton.addEventListener('click', function() {
-            if (dnsChart) {
-                showChart();
-            } else {
-                shareResults();
-            }
-        });
+        ctaButton.addEventListener('click', shareResults);
     }
     
     // Add hostname button
@@ -1394,7 +1390,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeButtons = document.querySelectorAll('.close');
     closeButtons.forEach(btn => {
         btn.addEventListener('click', function() {
-            const modal = this.closest('.fixed');
+            const modal = this.closest('.modal-overlay');
             if (modal) {
                 closeModal(modal.id);
             }
@@ -1418,15 +1414,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 sortTable(index);
             }
         });
-        
-        // Add tabindex for keyboard navigation
-        header.setAttribute('tabindex', '0');
-        header.setAttribute('role', 'button');
-        header.setAttribute('aria-label', `Sort by ${header.textContent}`);
     });
     
     // Close modals when clicking outside
-    const modals = document.querySelectorAll('[id$="Modal"]');
+    const modals = document.querySelectorAll('.modal-overlay');
     modals.forEach(modal => {
         modal.addEventListener('click', function(e) {
             if (e.target === this) {
@@ -1435,35 +1426,199 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Performance logging
     console.log('DoHSpeedTest initialized successfully');
-    console.log('Configuration:', Config);
-    
-    // Add service worker registration if available
-    if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js').catch(err => {
-            console.log('Service worker registration failed:', err);
-        });
+});
+
+class Particle {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        const speed = Math.random() * 1.5 + 0.5;
+        const angle = Math.random() * Math.PI * 2;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.radius = Math.random() * 2 + 1;
+        this.color = this.getRandomColor();
+        this.life = 0;
+        this.maxLife = Math.random() * 150 + 100;
+        this.pulsePhase = Math.random() * Math.PI * 2;
     }
-});
 
-// ============== ERROR HANDLING ==============
+    getRandomColor() {
+        const colors = [
+            `hsl(200, 100%, 70%)`,
+            `hsl(220, 100%, 75%)`,
+            `hsl(240, 100%, 80%)`,
+            `hsl(180, 100%, 70%)`,
+            `hsl(160, 100%, 75%)`
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
 
-window.addEventListener('error', function(e) {
-    console.error('Global error:', e.error);
-    notificationManager.show(`Unexpected error: ${e.error?.message || 'Unknown error'}`, 'error');
-});
+    update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.life++;
+        this.pulsePhase += 0.1;
 
-window.addEventListener('unhandledrejection', function(e) {
-    console.error('Unhandled promise rejection:', e.reason);
-    notificationManager.show(`Async error: ${e.reason?.message || 'Unknown async error'}`, 'error');
-});
+        if (this.x < -this.radius) this.x = this.canvas.width + this.radius;
+        if (this.x > this.canvas.width + this.radius) this.x = -this.radius;
+        if (this.y < -this.radius) this.y = this.canvas.height + this.radius;
+        if (this.y > this.canvas.height + this.radius) this.y = -this.radius;
 
-// ============== EXPORT FOR GLOBAL ACCESS ==============
+        if (this.life >= this.maxLife) {
+            this.x = Math.random() * this.canvas.width;
+            this.y = Math.random() * this.canvas.height;
+            this.life = 0;
+        }
+    }
 
-// Make functions available globally for HTML onclick handlers
+    draw(ctx) {
+        const pulseScale = 1 + Math.sin(this.pulsePhase) * 0.3;
+        
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius * pulseScale, 0, Math.PI * 2);
+        
+        const gradient = ctx.createRadialGradient(
+            this.x, this.y, 0,
+            this.x, this.y, this.radius * 3 * pulseScale
+        );
+        gradient.addColorStop(0, this.color.replace('70%', '90%'));
+        gradient.addColorStop(0.5, this.color);
+        gradient.addColorStop(1, 'transparent');
+        
+        ctx.fillStyle = gradient;
+        ctx.fill();
+        ctx.restore();
+    }
+}
+
+function initParticles() {
+    const canvas = document.getElementById('particles-canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let particles = [];
+    let animationFrameId = null;
+    let isVisible = true;
+    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function checkCollision(p1, p2) {
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        return distance < 80;
+    }
+
+    function drawConnections() {
+        if (!ctx) return;
+        ctx.save();
+        ctx.lineWidth = 1;
+        
+        for (let i = 0; i < particles.length; i++) {
+            for (let j = i + 1; j < particles.length; j++) {
+                if (checkCollision(particles[i], particles[j])) {
+                    const distance = Math.sqrt(
+                        Math.pow(particles[i].x - particles[j].x, 2) + 
+                        Math.pow(particles[i].y - particles[j].y, 2)
+                    );
+                    
+                    const opacity = Math.max(0, 1 - (distance / 80));
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(particles[i].x, particles[i].y);
+                    ctx.lineTo(particles[j].x, particles[j].y);
+                    
+                    const gradient = ctx.createLinearGradient(
+                        particles[i].x, particles[i].y,
+                        particles[j].x, particles[j].y
+                    );
+                    gradient.addColorStop(0, particles[i].color.replace('70%', '60%'));
+                    gradient.addColorStop(1, particles[j].color.replace('70%', '60%'));
+                    
+                    ctx.strokeStyle = gradient;
+                    ctx.globalAlpha = opacity * 0.6;
+                    ctx.stroke();
+
+                    const midX = (particles[i].x + particles[j].x) / 2;
+                    const midY = (particles[i].y + particles[j].y) / 2;
+                    
+                    ctx.beginPath();
+                    const glowGradient = ctx.createRadialGradient(midX, midY, 0, midX, midY, 30);
+                    glowGradient.addColorStop(0, `rgba(255, 255, 255, ${opacity * 0.4})`);
+                    glowGradient.addColorStop(1, 'transparent');
+                    ctx.fillStyle = glowGradient;
+                    ctx.fill();
+                }
+            }
+        }
+        
+        ctx.restore();
+    }
+
+    function animate() {
+        if (!isVisible || isReducedMotion || !ctx) return;
+        
+        ctx.fillStyle = 'rgba(12, 12, 12, 0.15)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        particles.forEach(particle => {
+            particle.update();
+            particle.draw(ctx);
+        });
+
+        drawConnections();
+
+        animationFrameId = requestAnimationFrame(animate);
+    }
+
+    resizeCanvas();
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        if (!isReducedMotion) {
+            particles = [];
+            const particleCount = Math.min(100, Math.floor(canvas.width * canvas.height / 8000));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle(canvas));
+            }
+        }
+    });
+
+    if (!isReducedMotion) {
+        const particleCount = Math.min(100, Math.floor(canvas.width * canvas.height / 8000));
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle(canvas));
+        }
+        animate();
+    } else {
+        ctx.fillStyle = 'rgba(12, 12, 12, 0.3)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    document.addEventListener('visibilitychange', function () {
+        isVisible = !document.hidden;
+        
+        if (isVisible && !animationFrameId && !isReducedMotion) {
+            animate();
+        } else if (!isVisible && animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+        }
+    });
+}
+
 window.sortTable = sortTable;
 window.copyToClipboard = copyToClipboard;
 window.copyBestDNS = copyBestDNS;
 window.openModal = openModal;
 window.closeModal = closeModal;
+window.closeNotification = (id) => notificationManager.hide(id);
