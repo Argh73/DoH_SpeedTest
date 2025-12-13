@@ -689,6 +689,7 @@ const dnsServers = [
   { "name": "Shecan (شکن)", "url": "https://free.shecan.ir/dns-query", "ips": ["178.22.122.100", "185.51.200.2"] },
   { "name": "Begzar (بگذر)", "url": "https://dns.begzar.ir/dns-query", "type": "post", "allowCors": false, "ips": ["185.55.226.26", "185.55.225.25"] },
   { "name": "403.online", "url": "https://dns.403.online/dns-query", "type": "post", "allowCors": false, "ips": ["10.202.10.202", "10.202.10.102"] },
+  { "name": "vanillapp", "url": "https://vanillapp.ir/dns-query", "ips": ["10.139.177.21", "10.139.177.22"] },
   { "name": "ZeusDNS", "url":"https://zeusdns.ir/dns-query", "ips": ["37.32.5.60", "37.32.5.61"] },
   { "name": "Radar Game", "url": "https://dns.radar.game/dns-query", "ips": ["10.202.10.10", "10.202.10.11"] },
   { "name": "Electro", "url": "https://dns.electrotm.org/dns-query", "ips": ["78.157.42.100", "78.157.42.101"] },
